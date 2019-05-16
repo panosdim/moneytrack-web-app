@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import MainPage from './pages/mainPage';
+import LoginPage from './pages/loginPage';
+import axios from 'axios';
+import { Spin } from 'antd';
+
+axios.defaults.baseURL = 'http://localhost:8000/';
+axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
 
 const App: React.FC = () => {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  const [isLoading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    axios
+      .get('user')
+      .then(response => {
+        setLoggedIn(true);
+        setLoading(false);
+      })
+      .catch(error => {
+        setLoggedIn(false);
+      });
+  }, []);
+
+  return <>{isLoading ? <div className="center"><Spin size="large" /></div> : isLoggedIn ? <MainPage /> : <LoginPage />}</>;
+};
 
 export default App;
