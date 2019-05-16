@@ -1,7 +1,5 @@
-import React from "react";
+import React from 'react';
 
-const MainPage: React.FC = () => {
-  return <>You are logged in</>;
+export const MainPage: React.FC = () => {
+    return <>You are logged in</>;
 };
-
-export default MainPage;
