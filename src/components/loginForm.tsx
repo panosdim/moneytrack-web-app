@@ -3,7 +3,6 @@ import { Form, Icon, Input, Button, message } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import axios from 'axios';
 import { setGlobal } from 'reactn';
-import { GlobalState } from '../model';
 
 interface Props extends FormComponentProps {}
 
@@ -24,7 +23,7 @@ const NormalLoginForm = (props: Props) => {
                         localStorage.setItem('token', response.data.token);
                         axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
                         setLoading(false);
-                        setGlobal<GlobalState>({ isLoggedIn: true });
+                        setGlobal({ isLoggedIn: true });
                     })
                     .catch(error => {
                         message.error('Login error. Please check your email or password.');

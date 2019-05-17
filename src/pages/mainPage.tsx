@@ -1,7 +1,6 @@
 import React from 'react';
 import { setGlobal, useGlobal } from 'reactn';
 import { PageHeader, Tabs, Button, Statistic, Row, Col, Typography, Icon, Card, message } from 'antd';
-import { GlobalState } from '../model';
 import income from '../images/income.png';
 import expense from '../images/expense.png';
 import axios from 'axios';
@@ -15,11 +14,11 @@ const logout = e => {
     e.preventDefault();
 
     localStorage.removeItem('token');
-    setGlobal<GlobalState>({ isLoggedIn: false });
+    setGlobal({ isLoggedIn: false });
 };
 
 export const MainPage: React.FC = () => {
-    const [isLoggedIn] = useGlobal<GlobalState>('isLoggedIn');
+    const [isLoggedIn] = useGlobal('isLoggedIn');
 
     React.useEffect(() => {
         axios
@@ -29,11 +28,11 @@ export const MainPage: React.FC = () => {
                     ...inc,
                     date: dayjs(inc.date),
                 }));
-                setGlobal<GlobalState>({ income: income });
+                setGlobal({ income: income });
             })
             .catch(error => {
                 message.error('Could not fetch income data. Please Login Again.');
-                setGlobal<GlobalState>({ isLoggedIn: false });
+                setGlobal({ isLoggedIn: false });
             });
     }, [isLoggedIn]);
 

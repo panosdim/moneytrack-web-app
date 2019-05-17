@@ -4,12 +4,11 @@ import './App.css';
 import axios from 'axios';
 import { Spin } from 'antd';
 import { LoginPage, MainPage } from './pages';
-import { GlobalState } from './model';
 
 axios.defaults.baseURL = 'http://localhost:8000/';
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
 
-setGlobal<GlobalState>({
+setGlobal({
     isLoggedIn: false,
     income: [],
     expenses: [],
@@ -17,7 +16,7 @@ setGlobal<GlobalState>({
 });
 
 const App: React.FC = () => {
-    const [isLoggedIn, setLoggedIn] = useGlobal<GlobalState>('isLoggedIn');
+    const [isLoggedIn, setLoggedIn] = useGlobal('isLoggedIn');
     const [isLoading, setLoading] = useState(true);
 
     React.useEffect(() => {

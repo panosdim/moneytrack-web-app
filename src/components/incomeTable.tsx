@@ -1,22 +1,6 @@
 import React from 'react';
 import { Table } from 'antd';
-import { GlobalState } from '../model';
 import { useGlobal } from 'reactn';
-
-const dataSource = [
-    {
-        key: '1',
-        name: 'Mike',
-        age: 32,
-        address: '10 Downing Street',
-    },
-    {
-        key: '2',
-        name: 'John',
-        age: 42,
-        address: '10 Downing Street',
-    },
-];
 
 const columns = [
     {
@@ -28,6 +12,7 @@ const columns = [
         title: 'Date',
         dataIndex: 'date',
         key: 'date',
+        render: date => date.format('MMMM YYYY'),
     },
     {
         title: 'Amount',
@@ -42,5 +27,6 @@ const columns = [
 ];
 
 export const IncomeTable: React.FC = () => {
-    return <Table dataSource={dataSource} columns={columns} />;
+    const [income] = useGlobal('income');
+    return <Table rowKey={record => record.id} dataSource={income} columns={columns} />;
 };
