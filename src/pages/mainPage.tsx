@@ -1,38 +1,119 @@
 import React from 'react';
-import { Layout, Menu, Typography } from 'antd';
-import { SelectParam } from 'antd/lib/menu';
+import { setGlobal, useGlobal } from 'reactn';
+import { PageHeader, Tabs, Button, Statistic, Row, Col, Typography, Icon, Card, message } from 'antd';
+import { GlobalState } from '../model';
+import income from '../images/income.png';
+import expense from '../images/expense.png';
+import axios from 'axios';
+import dayjs from 'dayjs';
+import { IncomeTable } from '../components';
 
-const { Header } = Layout;
+const TabPane = Tabs.TabPane;
 const { Title } = Typography;
 
+const logout = e => {
+    e.preventDefault();
+
+    localStorage.removeItem('token');
+    setGlobal<GlobalState>({ isLoggedIn: false });
+};
+
 export const MainPage: React.FC = () => {
-    const handleMenu = (param: SelectParam) => {
-        console.log(param);
-    };
+    const [isLoggedIn] = useGlobal<GlobalState>('isLoggedIn');
+
+    React.useEffect(() => {
+        axios
+            .get('income')
+            .then(response => {
+                const income = response.data.data.map(inc => ({
+                    ...inc,
+                    date: dayjs(inc.date),
+                }));
+                setGlobal<GlobalState>({ income: income });
+            })
+            .catch(error => {
+                message.error('Could not fetch income data. Please Login Again.');
+                setGlobal<GlobalState>({ isLoggedIn: false });
+            });
+    }, [isLoggedIn]);
 
     return (
         <>
-            <Layout>
-                <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
-                    <Title id='title' className='logo' level={2}>
-                        Money Track
-                    </Title>
-                    <Menu
-                        onSelect={handleMenu}
-                        theme='dark'
-                        mode='horizontal'
-                        defaultSelectedKeys={['1']}
-                        style={{ lineHeight: '64px' }}
-                    >
-                        <Menu.Item key='1'>Income</Menu.Item>
-                        <Menu.Item key='2'>Expense</Menu.Item>
-                        <Menu.Item key='3'>Category</Menu.Item>
-                        <Menu.Item key='4' style={{ float: 'right' }}>
-                            Logout
-                        </Menu.Item>
-                    </Menu>
-                </Header>
-            </Layout>
+            <Title style={{ textAlign: 'center' }}>Money Track App</Title>
+            <PageHeader
+                backIcon={false}
+                title='Dashboard'
+                subTitle='An Overview of your Income and Expenses'
+                extra={[
+                    <Button key='1' type='danger' icon='logout' onClick={logout}>
+                        Logout
+                    </Button>,
+                ]}
+                footer={
+                    <Tabs defaultActiveKey='1' size='large'>
+                        <TabPane
+                            tab={
+                                <span>
+                                    <img alt={''} style={{ marginRight: '8px' }} src={income} height={16} width={16} />
+                                    Income
+                                </span>
+                            }
+                            key='1'
+                        >
+                            <IncomeTable />
+                        </TabPane>
+                        <TabPane
+                            tab={
+                                <span>
+                                    <img alt={''} style={{ marginRight: '8px' }} src={expense} height={16} width={16} />
+                                    Expenses
+                                </span>
+                            }
+                            key='2'
+                        >
+                            Expenses
+                        </TabPane>
+                        <TabPane
+                            tab={
+                                <span>
+                                    <Icon type='tags' />
+                                    Categories
+                                </span>
+                            }
+                            key='3'
+                        >
+                            Categories
+                        </TabPane>
+                    </Tabs>
+                }
+            >
+                <Row gutter={16}>
+                    <Col span={12}>
+                        <Card>
+                            <Statistic
+                                title='Active'
+                                value={11.28}
+                                precision={2}
+                                valueStyle={{ color: '#3f8600' }}
+                                prefix={<Icon type='arrow-up' />}
+                                suffix='%'
+                            />
+                        </Card>
+                    </Col>
+                    <Col span={12}>
+                        <Card>
+                            <Statistic
+                                title='Idle'
+                                value={9.3}
+                                precision={2}
+                                valueStyle={{ color: '#cf1322' }}
+                                prefix={<Icon type='arrow-down' />}
+                                suffix='%'
+                            />
+                        </Card>
+                    </Col>
+                </Row>
+            </PageHeader>
         </>
     );
 };

@@ -23,7 +23,7 @@
     left: 0;
 }
 
-#title.logo {
+h2.logo {
     padding: 0px 20px;
     float: left;
     color: white;

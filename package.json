@@ -9,9 +9,11 @@
     "@types/react-dom": "16.8.4",
     "antd": "^3.18.1",
     "axios": "^0.18.0",
+    "dayjs": "^1.8.14",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1",
+    "reactn": "^2.0.1",
     "typescript": "3.4.5"
   },
   "scripts": {

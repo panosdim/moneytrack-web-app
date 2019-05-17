@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Typography } from 'antd';
-import logo from '../logo.jpg';
+import logo from '../images/logo.jpg';
 import { LoginForm } from '../components';
 
 export const LoginPage: React.FC = () => {

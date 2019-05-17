@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
+import { useGlobal, setGlobal } from 'reactn';
 import './App.css';
 import axios from 'axios';
 import { Spin } from 'antd';
 import { LoginPage, MainPage } from './pages';
+import { GlobalState } from './model';
 
 axios.defaults.baseURL = 'http://localhost:8000/';
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
 
+setGlobal<GlobalState>({
+    isLoggedIn: false,
+    income: [],
+    expenses: [],
+    categories: [],
+});
+
 const App: React.FC = () => {
-    const [isLoggedIn, setLoggedIn] = useState(false);
+    const [isLoggedIn, setLoggedIn] = useGlobal<GlobalState>('isLoggedIn');
     const [isLoading, setLoading] = useState(true);
 
     React.useEffect(() => {
@@ -22,6 +31,7 @@ const App: React.FC = () => {
                 setLoggedIn(false);
                 setLoading(false);
             });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
