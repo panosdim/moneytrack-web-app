@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { setGlobal, useGlobal } from 'reactn';
 import { PageHeader, Tabs, Button, Statistic, Row, Col, Typography, Icon, Card, message } from 'antd';
 import income from '../images/income.png';
 import expense from '../images/expense.png';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import { IncomeTable } from '../components';
+import { IncomeTab } from '.';
 
 const TabPane = Tabs.TabPane;
 const { Title } = Typography;
@@ -19,6 +19,7 @@ const logout = e => {
 
 export const MainPage: React.FC = () => {
     const [isLoggedIn] = useGlobal('isLoggedIn');
+    const [selectedTab, setSelectedTab] = useState('Income');
 
     React.useEffect(() => {
         axios
@@ -30,11 +31,27 @@ export const MainPage: React.FC = () => {
                 }));
                 setGlobal({ income: income });
             })
-            .catch(error => {
+            .catch(() => {
                 message.error('Could not fetch income data. Please Login Again.');
                 setGlobal({ isLoggedIn: false });
             });
     }, [isLoggedIn]);
+
+    const onChange = activeKey => {
+        setSelectedTab(activeKey);
+    };
+
+    const addIncome = e => {
+        e.preventDefault();
+
+        console.log(selectedTab);
+    };
+
+    const operations = (
+        <Button onClick={addIncome} icon='plus' type='primary'>
+            {selectedTab}
+        </Button>
+    );
 
     return (
         <>
@@ -42,14 +59,19 @@ export const MainPage: React.FC = () => {
             <PageHeader
                 backIcon={false}
                 title='Dashboard'
-                subTitle='An Overview of your Income and Expenses'
+                subTitle='An Overview of your Savings'
                 extra={[
                     <Button key='1' type='danger' icon='logout' onClick={logout}>
                         Logout
                     </Button>,
                 ]}
                 footer={
-                    <Tabs defaultActiveKey='1' size='large'>
+                    <Tabs
+                        defaultActiveKey={selectedTab}
+                        size='large'
+                        onChange={onChange}
+                        tabBarExtraContent={operations}
+                    >
                         <TabPane
                             tab={
                                 <span>
@@ -57,9 +79,9 @@ export const MainPage: React.FC = () => {
                                     Income
                                 </span>
                             }
-                            key='1'
+                            key='Income'
                         >
-                            <IncomeTable />
+                            <IncomeTab />
                         </TabPane>
                         <TabPane
                             tab={
@@ -68,7 +90,7 @@ export const MainPage: React.FC = () => {
                                     Expenses
                                 </span>
                             }
-                            key='2'
+                            key='Expense'
                         >
                             Expenses
                         </TabPane>
@@ -79,7 +101,7 @@ export const MainPage: React.FC = () => {
                                     Categories
                                 </span>
                             }
-                            key='3'
+                            key='Category'
                         >
                             Categories
                         </TabPane>
