@@ -4,7 +4,6 @@ import { PageHeader, Tabs, Button, Statistic, Row, Col, Typography, Icon, Card, 
 import income from '../images/income.png';
 import expense from '../images/expense.png';
 import axios from 'axios';
-import dayjs from 'dayjs';
 import { IncomeTab } from '.';
 
 const TabPane = Tabs.TabPane;
@@ -27,7 +26,7 @@ export const MainPage: React.FC = () => {
             .then(response => {
                 const income = response.data.data.map(inc => ({
                     ...inc,
-                    date: dayjs(inc.date),
+                    date: new Date(inc.date),
                 }));
                 setGlobal({ income: income });
             })

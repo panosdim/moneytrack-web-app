@@ -1,56 +1,74 @@
 import React from 'react';
-import { Card, Statistic, Icon } from 'antd';
+import { Card, Statistic, Icon, Row, Col } from 'antd';
 import { useGlobal } from 'reactn';
-import dayjs from 'dayjs';
-import isBetween from 'dayjs/plugin/isBetween';
+import { format, isWithinInterval, startOfMonth, endOfMonth, startOfYear, endOfYear, subYears } from 'date-fns';
 
 export const IncomeStatistics: React.FC = () => {
     const [income] = useGlobal('income');
 
-    dayjs.extend(isBetween);
-    console.log(
-        dayjs()
-            .startOf('month')
-            .toString(),
-    );
-    console.log(
-        dayjs()
-            .endOf('month')
-            .toString(),
+    const today = Date.now();
+    const monthIncome = income.filter(inc =>
+        isWithinInterval(inc.date, { start: startOfMonth(today), end: endOfMonth(today) }),
     );
 
-    console.log(dayjs('2019-05-20').isBetween(dayjs().startOf('month'), dayjs().endOf('month')));
+    const totalMonthIncome = monthIncome.reduce((total, inc) => total + inc.amount, 0);
 
-    const totalIncome = income.reduce((total, inc) => {
-        if (inc.date.isBetween(dayjs().startOf('month'), dayjs().endOf('month'))) {
-            total += inc.amount;
-            console.log(total);
-        }
-        return total;
-    }, 0);
+    const monthIncomePreviousYear = income.filter(inc =>
+        isWithinInterval(inc.date, { start: startOfMonth(subYears(today, 1)), end: endOfMonth(subYears(today, 1)) }),
+    );
 
-    console.log(totalIncome);
+    const totalMonthIncomePreviousYear = monthIncomePreviousYear.reduce((total, inc) => total + inc.amount, 0);
+
+    const yearIncome = income.filter(inc =>
+        isWithinInterval(inc.date, { start: startOfYear(today), end: endOfYear(today) }),
+    );
+
+    const totalYearIncome = yearIncome.reduce((total, inc) => total + inc.amount, 0);
 
     return (
         <>
             <Card style={{ marginBottom: '16px' }}>
-                <Statistic
-                    title={`Total Income ${dayjs().format('MMMM YYYY')}`}
-                    value={totalIncome}
-                    precision={2}
-                    valueStyle={{ color: '#3f8600' }}
-                    prefix={<Icon type='arrow-up' />}
-                    suffix='%'
-                />
+                <Row gutter={16}>
+                    <Col span={12}>
+                        <Statistic
+                            title={`Total Income ${format(today, 'MMMM yyyy')}`}
+                            value={totalMonthIncome}
+                            decimalSeparator=','
+                            groupSeparator='.'
+                            precision={2}
+                            valueStyle={{
+                                color: totalMonthIncome > totalMonthIncomePreviousYear ? '#3f8600' : '#cf1322',
+                            }}
+                            prefix={
+                                totalMonthIncome > totalMonthIncomePreviousYear ? (
+                                    <Icon type='arrow-up' />
+                                ) : (
+                                    <Icon type='arrow-down' />
+                                )
+                            }
+                            suffix='€'
+                        />
+                    </Col>
+                    <Col span={12}>
+                        <Statistic
+                            title={`Total Income ${format(subYears(today, 1), 'MMMM yyyy')}`}
+                            value={totalMonthIncomePreviousYear}
+                            decimalSeparator=','
+                            groupSeparator='.'
+                            precision={2}
+                            suffix='€'
+                        />
+                    </Col>
+                </Row>
             </Card>
             <Card>
                 <Statistic
-                    title='Idle'
-                    value={9.3}
+                    title={`Total Income ${format(today, 'yyyy')}`}
+                    value={totalYearIncome}
+                    decimalSeparator=','
+                    groupSeparator='.'
                     precision={2}
-                    valueStyle={{ color: '#cf1322' }}
-                    prefix={<Icon type='arrow-down' />}
-                    suffix='%'
+                    suffix='€'
                 />
             </Card>
         </>
