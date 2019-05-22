@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { setGlobal, useGlobal } from 'reactn';
-import { PageHeader, Tabs, Button, Statistic, Row, Col, Typography, Icon, Card, message } from 'antd';
+import { PageHeader, Tabs, Button, Typography, Icon, message } from 'antd';
 import income from '../images/income.png';
 import expense from '../images/expense.png';
 import axios from 'axios';
 import { IncomeTab } from '.';
+import { SavingStatistics, FormModal } from '../components';
 
 const TabPane = Tabs.TabPane;
 const { Title } = Typography;
@@ -19,6 +20,7 @@ const logout = e => {
 export const MainPage: React.FC = () => {
     const [isLoggedIn] = useGlobal('isLoggedIn');
     const [selectedTab, setSelectedTab] = useState('Income');
+    const [showModal, setShowModal] = useState(false);
 
     React.useEffect(() => {
         axios
@@ -40,14 +42,12 @@ export const MainPage: React.FC = () => {
         setSelectedTab(activeKey);
     };
 
-    const addIncome = e => {
-        e.preventDefault();
-
-        console.log(selectedTab);
+    const AddNew = () => {
+        setShowModal(true);
     };
 
     const operations = (
-        <Button onClick={addIncome} icon='plus' type='primary'>
+        <Button onClick={AddNew} icon='plus' type='primary'>
             {selectedTab}
         </Button>
     );
@@ -55,6 +55,7 @@ export const MainPage: React.FC = () => {
     return (
         <>
             <Title style={{ textAlign: 'center' }}>Money Track App</Title>
+            <FormModal visible={showModal} onVisibleChange={visible => setShowModal(visible)} type={selectedTab} />
             <PageHeader
                 backIcon={false}
                 title='Dashboard'
@@ -107,32 +108,7 @@ export const MainPage: React.FC = () => {
                     </Tabs>
                 }
             >
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <Card>
-                            <Statistic
-                                title='Active'
-                                value={11.28}
-                                precision={2}
-                                valueStyle={{ color: '#3f8600' }}
-                                prefix={<Icon type='arrow-up' />}
-                                suffix='%'
-                            />
-                        </Card>
-                    </Col>
-                    <Col span={12}>
-                        <Card>
-                            <Statistic
-                                title='Idle'
-                                value={9.3}
-                                precision={2}
-                                valueStyle={{ color: '#cf1322' }}
-                                prefix={<Icon type='arrow-down' />}
-                                suffix='%'
-                            />
-                        </Card>
-                    </Col>
-                </Row>
+                <SavingStatistics />
             </PageHeader>
         </>
     );

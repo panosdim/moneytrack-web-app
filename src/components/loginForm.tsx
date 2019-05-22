@@ -37,7 +37,7 @@ const NormalLoginForm = (props: Props) => {
         <Form onSubmit={handleSubmit}>
             <Form.Item>
                 {getFieldDecorator('email', {
-                    rules: [{ required: true, message: 'Please input your email!' }],
+                    rules: [{ required: true, type: 'email', message: 'Please input your email!' }],
                 })(
                     <Input
                         prefix={<Icon type='user' style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -50,7 +50,7 @@ const NormalLoginForm = (props: Props) => {
                 {getFieldDecorator('password', {
                     rules: [{ required: true, message: 'Please input your Password!' }],
                 })(
-                    <Input
+                    <Input.Password
                         prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />}
                         type='password'
                         placeholder='Password'

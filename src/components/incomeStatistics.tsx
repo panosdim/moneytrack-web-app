@@ -1,29 +1,31 @@
 import React from 'react';
 import { Card, Statistic, Icon, Row, Col } from 'antd';
 import { useGlobal } from 'reactn';
-import { format, isWithinInterval, startOfMonth, endOfMonth, startOfYear, endOfYear, subYears } from 'date-fns';
+import moment from 'moment';
 
 export const IncomeStatistics: React.FC = () => {
     const [income] = useGlobal('income');
 
-    const today = Date.now();
-    const monthIncome = income.filter(inc =>
-        isWithinInterval(inc.date, { start: startOfMonth(today), end: endOfMonth(today) }),
-    );
+    const totalMonthIncome = income
+        .filter(inc => moment(inc.date).isBetween(moment().startOf('month'), moment().endOf('month')))
+        .reduce((total, inc) => total + inc.amount, 0);
 
-    const totalMonthIncome = monthIncome.reduce((total, inc) => total + inc.amount, 0);
+    const totalMonthIncomePreviousYear = income
+        .filter(inc =>
+            moment(inc.date).isBetween(
+                moment()
+                    .subtract(1, 'year')
+                    .startOf('month'),
+                moment()
+                    .subtract(1, 'year')
+                    .endOf('month'),
+            ),
+        )
+        .reduce((total, inc) => total + inc.amount, 0);
 
-    const monthIncomePreviousYear = income.filter(inc =>
-        isWithinInterval(inc.date, { start: startOfMonth(subYears(today, 1)), end: endOfMonth(subYears(today, 1)) }),
-    );
-
-    const totalMonthIncomePreviousYear = monthIncomePreviousYear.reduce((total, inc) => total + inc.amount, 0);
-
-    const yearIncome = income.filter(inc =>
-        isWithinInterval(inc.date, { start: startOfYear(today), end: endOfYear(today) }),
-    );
-
-    const totalYearIncome = yearIncome.reduce((total, inc) => total + inc.amount, 0);
+    const totalYearIncome = income
+        .filter(inc => moment(inc.date).isBetween(moment().startOf('year'), moment().endOf('year')))
+        .reduce((total, inc) => total + inc.amount, 0);
 
     return (
         <>
@@ -31,7 +33,7 @@ export const IncomeStatistics: React.FC = () => {
                 <Row gutter={16}>
                     <Col span={12}>
                         <Statistic
-                            title={`Total Income ${format(today, 'MMMM yyyy')}`}
+                            title={`Total Income ${moment().format('MMMM YYYY')}`}
                             value={totalMonthIncome}
                             decimalSeparator=','
                             groupSeparator='.'
@@ -51,7 +53,9 @@ export const IncomeStatistics: React.FC = () => {
                     </Col>
                     <Col span={12}>
                         <Statistic
-                            title={`Total Income ${format(subYears(today, 1), 'MMMM yyyy')}`}
+                            title={`Total Income ${moment()
+                                .subtract(1, 'year')
+                                .format('MMMM YYYY')}`}
                             value={totalMonthIncomePreviousYear}
                             decimalSeparator=','
                             groupSeparator='.'
@@ -63,7 +67,7 @@ export const IncomeStatistics: React.FC = () => {
             </Card>
             <Card>
                 <Statistic
-                    title={`Total Income ${format(today, 'yyyy')}`}
+                    title={`Total Income ${moment().format('YYYY')}`}
                     value={totalYearIncome}
                     decimalSeparator=','
                     groupSeparator='.'

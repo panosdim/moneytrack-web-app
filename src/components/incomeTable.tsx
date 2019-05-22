@@ -1,29 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Table } from 'antd';
 import { useGlobal } from 'reactn';
 import { SearchProps } from './searchProps';
-import { format, getUnixTime, isWithinInterval, startOfMonth, endOfMonth, startOfYear, endOfYear } from 'date-fns';
 import { incomeType } from '../model';
+import moment from 'moment';
+import { FormModal } from '.';
 
 export const IncomeTable: React.FC = () => {
     const [income] = useGlobal('income');
-    const today = Date.now();
+    const [showModal, setShowModal] = useState(false);
+    const [data, setData] = useState<incomeType>();
 
     const dateFilter = (value: string, record: incomeType) => {
         if (value === 'This Month') {
-            return isWithinInterval(record.date, { start: startOfMonth(today), end: endOfMonth(today) });
+            return moment(record.date).isBetween(moment().startOf('month'), moment().endOf('month'));
         }
         if (value === 'This Year') {
-            return isWithinInterval(record.date, {
-                start: startOfYear(today),
-                end: endOfYear(today),
-            });
+            return moment(record.date).isBetween(moment().startOf('year'), moment().endOf('year'));
         }
     };
 
     const handleClick = (record: incomeType) => {
-        console.log('Click');
-        console.log(record);
+        setData(record);
+        setShowModal(true);
     };
 
     const columns = [
@@ -43,8 +42,8 @@ export const IncomeTable: React.FC = () => {
             ],
             filterMultiple: false,
             onFilter: dateFilter,
-            sorter: (a: incomeType, b: incomeType) => getUnixTime(a.date) - getUnixTime(b.date),
-            render: (date: Date) => format(date, 'MMMM yyyy'),
+            sorter: (a: incomeType, b: incomeType) => moment(a.date).unix() - moment(b.date).unix(),
+            render: (date: Date) => moment(date).format('MMMM YYYY'),
         },
         {
             title: 'Amount',
@@ -61,23 +60,31 @@ export const IncomeTable: React.FC = () => {
     ];
 
     return (
-        <Table
-            // @ts-ignore
-            rowKey={record => record.id}
-            dataSource={income}
-            // @ts-ignore
-            columns={columns}
-            onRow={(record, rowIndex) => {
-                return {
-                    onClick: event => {
-                        handleClick(record);
-                    }, // click row
-                    onDoubleClick: event => {}, // double click row
-                    onContextMenu: event => {}, // right button click row
-                    onMouseEnter: event => {}, // mouse enter row
-                    onMouseLeave: event => {}, // mouse leave row
-                };
-            }}
-        />
+        <>
+            <FormModal
+                visible={showModal}
+                data={data}
+                onVisibleChange={visible => setShowModal(visible)}
+                type='Income'
+            />
+            <Table
+                // @ts-ignore
+                rowKey={record => record.id}
+                dataSource={income}
+                // @ts-ignore
+                columns={columns}
+                onRow={(record, rowIndex) => {
+                    return {
+                        onClick: event => {
+                            handleClick(record);
+                        }, // click row
+                        onDoubleClick: event => {}, // double click row
+                        onContextMenu: event => {}, // right button click row
+                        onMouseEnter: event => {}, // mouse enter row
+                        onMouseLeave: event => {}, // mouse leave row
+                    };
+                }}
+            />
+        </>
     );
 };
