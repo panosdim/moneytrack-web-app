@@ -13,10 +13,10 @@ export const IncomeTable: React.FC = () => {
 
     const dateFilter = (value: string, record: incomeType) => {
         if (value === 'This Month') {
-            return moment(record.date).isBetween(moment().startOf('month'), moment().endOf('month'));
+            return moment(record.date).isBetween(moment().startOf('month'), moment().endOf('month'), undefined, '[]');
         }
         if (value === 'This Year') {
-            return moment(record.date).isBetween(moment().startOf('year'), moment().endOf('year'));
+            return moment(record.date).isBetween(moment().startOf('year'), moment().endOf('year'), undefined, '[]');
         }
     };
 

@@ -3,6 +3,7 @@ import { incomeType } from '../model';
 import Form, { FormComponentProps } from 'antd/lib/form';
 import { Input, DatePicker, Icon } from 'antd';
 import moment from 'moment';
+import { ReactComponent as EuroIconSvg } from '../images/euro.svg';
 
 interface Props extends FormComponentProps {
     income?: incomeType;
@@ -47,7 +48,8 @@ const NormalIncomeForm: React.FC<Props> = (props: Props) => {
                     ],
                 })(
                     <Input
-                        suffix={<Icon type='euro' style={{ color: 'rgba(0,0,0,.45)' }} />}
+                        // @ts-ignore
+                        suffix={<Icon component={EuroIconSvg} style={{ color: 'rgba(0,0,0,.45)' }} />}
                         style={{ width: '100%' }}
                         type='number'
                         placeholder='Enter Amount'

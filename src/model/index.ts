@@ -4,3 +4,5 @@ export type incomeType = {
     comment: string;
     date: Date;
 };
+
+export type tabType = 'Income' | 'Expense' | 'Category';

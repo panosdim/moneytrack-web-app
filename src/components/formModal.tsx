@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Modal, message, Button, Popconfirm } from 'antd';
-import { incomeType } from '../model';
+import { incomeType, tabType } from '../model';
 import { IncomeForm } from './incomeForm';
 import axios from 'axios';
-import { useGlobal } from 'reactn';
+import { useGlobal, setGlobal } from 'reactn';
 import moment from 'moment';
 
 interface Props {
     visible: boolean;
     data?: incomeType;
     onVisibleChange: (visible: boolean) => void;
-    type: string;
+    type: tabType;
 }
 
 export const FormModal: React.FC<Props> = (props: Props) => {
@@ -80,9 +80,16 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                         onVisibleChange(false);
                         form.resetFields();
                     })
-                    .catch(() => {
-                        message.error('Fail to save Income!');
-                        setLoading(false);
+                    .catch(error => {
+                        if (error.response && error.response.status === 400) {
+                            // JWT Token expired
+                            setLoading(false);
+                            setGlobal({ isLoggedIn: false });
+                            message.error(error.response.data.error);
+                        } else {
+                            setLoading(false);
+                            message.error('Fail to save Income!');
+                        }
                     });
             }
         });
@@ -103,8 +110,15 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                     form.resetFields();
                 })
                 .catch(error => {
-                    setLoading(false);
-                    message.error('Fail to delete Income!');
+                    if (error.response && error.response.status === 400) {
+                        // JWT Token expired
+                        setLoading(false);
+                        setGlobal({ isLoggedIn: false });
+                        message.error(error.response.data.error);
+                    } else {
+                        setLoading(false);
+                        message.error('Fail to delete Income!');
+                    }
                 });
         }
     };

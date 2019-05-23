@@ -6,6 +6,7 @@ import expense from '../images/expense.png';
 import axios from 'axios';
 import { IncomeTab } from '.';
 import { SavingStatistics, FormModal } from '../components';
+import { tabType } from '../model';
 
 const TabPane = Tabs.TabPane;
 const { Title } = Typography;
@@ -19,17 +20,13 @@ const logout = e => {
 
 export const MainPage: React.FC = () => {
     const [isLoggedIn] = useGlobal('isLoggedIn');
-    const [selectedTab, setSelectedTab] = useState('Income');
+    const [selectedTab, setSelectedTab] = useState<tabType>('Income');
     const [showModal, setShowModal] = useState(false);
 
     React.useEffect(() => {
         axios
             .get('income')
             .then(response => {
-                // const income = response.data.data.map(inc => ({
-                //     ...inc,
-                //     date: new Date(inc.date),
-                // }));
                 setGlobal({ income: response.data.data });
             })
             .catch(() => {
