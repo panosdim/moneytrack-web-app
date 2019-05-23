@@ -58,7 +58,7 @@ export const FormModal: React.FC<Props> = (props: Props) => {
     const saveIncome = () => {
         const form = (incomeForm as any).current;
 
-        form.validateFields((err, values: incomeType) => {
+        form.validateFields((err: any, values: incomeType) => {
             if (!err) {
                 setLoading(true);
                 const method = data ? 'put' : 'post';
@@ -72,6 +72,7 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                     data: storeValues,
                 })
                     .then(response => {
+                        console.log(response.data);
                         data
                             ? setIncome(income.map(inc => (inc.id === data.id ? response.data.data : inc)))
                             : setIncome([...income, response.data.data]);
@@ -83,36 +84,36 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                     .catch(() => {
                         message.error('Fail to save Income!');
                         setLoading(false);
-                        setVisible(false);
-                        onVisibleChange(false);
-                        form.resetFields();
                     });
             }
         });
     };
 
     const deleteIncome = () => {
-        axios
-            // @ts-ignore
-            .delete(`income/${data.id}`)
-            .then(response => {
-                // @ts-ignore
-                setIncome(income.filter(inc => inc.id !== data.id));
-                const form = (incomeForm as any).current;
+        if (data) {
+            setLoading(true);
+            axios
+                .delete(`income/${data.id}`)
+                .then(response => {
+                    setIncome(income.filter(inc => inc.id !== data.id));
+                    const form = (incomeForm as any).current;
 
-                setVisible(false);
-                onVisibleChange(false);
-                form.resetFields();
-            })
-            .catch(error => {
-                message.error('Fail to delete Income!');
-            });
+                    setLoading(false);
+                    setVisible(false);
+                    onVisibleChange(false);
+                    form.resetFields();
+                })
+                .catch(error => {
+                    setLoading(false);
+                    message.error('Fail to delete Income!');
+                });
+        }
     };
 
     const title = data ? `Edit ${type}` : `Add ${type}`;
     const footer = data
         ? [
-              <Button key='back' type='danger' onClick={handleDelete}>
+              <Button key='back' type='danger' loading={isLoading} onClick={handleDelete}>
                   Delete
               </Button>,
               <Button key='submit' type='primary' loading={isLoading} onClick={handleOk}>

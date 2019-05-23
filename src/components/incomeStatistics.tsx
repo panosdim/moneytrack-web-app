@@ -1,31 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Statistic, Icon, Row, Col } from 'antd';
 import { useGlobal } from 'reactn';
 import moment from 'moment';
 
 export const IncomeStatistics: React.FC = () => {
     const [income] = useGlobal('income');
+    const [totalMonthIncome, setTotalMonthIncome] = useState();
+    const [totalMonthIncomePreviousYear, setTotalMonthIncomePreviousYear] = useState();
+    const [totalYearIncome, setTotalYearIncome] = useState();
 
-    const totalMonthIncome = income
-        .filter(inc => moment(inc.date).isBetween(moment().startOf('month'), moment().endOf('month')))
-        .reduce((total, inc) => total + inc.amount, 0);
+    useEffect(() => {
+        setTotalMonthIncome(
+            income
+                .filter(inc => moment(inc.date).isBetween(moment().startOf('month'), moment().endOf('month'), 'month'))
+                .reduce((total, inc) => total + inc.amount, 0),
+        );
 
-    const totalMonthIncomePreviousYear = income
-        .filter(inc =>
-            moment(inc.date).isBetween(
-                moment()
-                    .subtract(1, 'year')
-                    .startOf('month'),
-                moment()
-                    .subtract(1, 'year')
-                    .endOf('month'),
-            ),
-        )
-        .reduce((total, inc) => total + inc.amount, 0);
+        setTotalMonthIncomePreviousYear(
+            income
+                .filter(inc =>
+                    moment(inc.date).isBetween(
+                        moment()
+                            .subtract(1, 'year')
+                            .startOf('month'),
+                        moment()
+                            .subtract(1, 'year')
+                            .endOf('month'),
+                    ),
+                )
+                .reduce((total, inc) => total + inc.amount, 0),
+        );
 
-    const totalYearIncome = income
-        .filter(inc => moment(inc.date).isBetween(moment().startOf('year'), moment().endOf('year')))
-        .reduce((total, inc) => total + inc.amount, 0);
+        setTotalYearIncome(
+            income
+                .filter(inc => moment(inc.date).isBetween(moment().startOf('year'), moment().endOf('year')))
+                .reduce((total, inc) => total + inc.amount, 0),
+        );
+    }, [income]);
+
+    console.log(
+        income.filter(inc =>
+            //@ts-ignore
+            moment(inc.date).isBetween(moment().startOf('month'), moment().endOf('month'), null, '[]'),
+        ),
+    );
 
     return (
         <>

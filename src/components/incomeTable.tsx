@@ -44,6 +44,7 @@ export const IncomeTable: React.FC = () => {
             onFilter: dateFilter,
             sorter: (a: incomeType, b: incomeType) => moment(a.date).unix() - moment(b.date).unix(),
             render: (date: Date) => moment(date).format('MMMM YYYY'),
+            defaultSortOrder: 'descend',
         },
         {
             title: 'Amount',

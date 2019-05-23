@@ -26,11 +26,11 @@ export const MainPage: React.FC = () => {
         axios
             .get('income')
             .then(response => {
-                const income = response.data.data.map(inc => ({
-                    ...inc,
-                    date: new Date(inc.date),
-                }));
-                setGlobal({ income: income });
+                // const income = response.data.data.map(inc => ({
+                //     ...inc,
+                //     date: new Date(inc.date),
+                // }));
+                setGlobal({ income: response.data.data });
             })
             .catch(() => {
                 message.error('Could not fetch income data. Please Login Again.');
