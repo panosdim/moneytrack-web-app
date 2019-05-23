@@ -12,7 +12,9 @@ export const IncomeStatistics: React.FC = () => {
     useEffect(() => {
         setTotalMonthIncome(
             income
-                .filter(inc => moment(inc.date).isBetween(moment().startOf('month'), moment().endOf('month'), 'month'))
+                .filter(inc =>
+                    moment(inc.date).isBetween(moment().startOf('month'), moment().endOf('month'), undefined, '[]'),
+                )
                 .reduce((total, inc) => total + inc.amount, 0),
         );
 
@@ -26,6 +28,8 @@ export const IncomeStatistics: React.FC = () => {
                         moment()
                             .subtract(1, 'year')
                             .endOf('month'),
+                        undefined,
+                        '[]',
                     ),
                 )
                 .reduce((total, inc) => total + inc.amount, 0),
@@ -33,17 +37,12 @@ export const IncomeStatistics: React.FC = () => {
 
         setTotalYearIncome(
             income
-                .filter(inc => moment(inc.date).isBetween(moment().startOf('year'), moment().endOf('year')))
+                .filter(inc =>
+                    moment(inc.date).isBetween(moment().startOf('year'), moment().endOf('year'), undefined, '[]'),
+                )
                 .reduce((total, inc) => total + inc.amount, 0),
         );
     }, [income]);
-
-    console.log(
-        income.filter(inc =>
-            //@ts-ignore
-            moment(inc.date).isBetween(moment().startOf('month'), moment().endOf('month'), null, '[]'),
-        ),
-    );
 
     return (
         <>

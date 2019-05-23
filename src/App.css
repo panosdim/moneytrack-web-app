@@ -30,3 +30,8 @@ h2.logo {
     margin: 0px;
     line-height: 64px;
 }
+
+th.column-money,
+td.column-money {
+    text-align: right !important;
+}

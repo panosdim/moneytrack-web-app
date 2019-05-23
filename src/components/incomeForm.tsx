@@ -41,16 +41,15 @@ const NormalIncomeForm: React.FC<Props> = (props: Props) => {
                     rules: [
                         {
                             required: true,
-                            pattern: new RegExp('\\d+[.]{0,1}\\d{0,2}'),
+                            pattern: /^(0|[1-9][0-9]*)(\.[0-9]{0,2})?$/,
                             message: 'Please enter income amount!',
                         },
                     ],
                 })(
-                    // @ts-ignore
                     <Input
                         suffix={<Icon type='euro' style={{ color: 'rgba(0,0,0,.45)' }} />}
                         style={{ width: '100%' }}
-                        precision={2}
+                        type='number'
                         placeholder='Enter Amount'
                     />,
                 )}

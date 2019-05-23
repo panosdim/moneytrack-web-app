@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Modal, message, Button } from 'antd';
+import { Modal, message, Button, Popconfirm } from 'antd';
 import { incomeType } from '../model';
 import { IncomeForm } from './incomeForm';
 import axios from 'axios';
@@ -72,7 +72,6 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                     data: storeValues,
                 })
                     .then(response => {
-                        console.log(response.data);
                         data
                             ? setIncome(income.map(inc => (inc.id === data.id ? response.data.data : inc)))
                             : setIncome([...income, response.data.data]);
@@ -113,9 +112,16 @@ export const FormModal: React.FC<Props> = (props: Props) => {
     const title = data ? `Edit ${type}` : `Add ${type}`;
     const footer = data
         ? [
-              <Button key='back' type='danger' loading={isLoading} onClick={handleDelete}>
-                  Delete
-              </Button>,
+              <Popconfirm
+                  title={`Are you sure delete this ${type}?`}
+                  onConfirm={handleDelete}
+                  okText='Yes'
+                  cancelText='No'
+              >
+                  <Button key='back' type='danger' loading={isLoading}>
+                      Delete
+                  </Button>
+              </Popconfirm>,
               <Button key='submit' type='primary' loading={isLoading} onClick={handleOk}>
                   Save
               </Button>,

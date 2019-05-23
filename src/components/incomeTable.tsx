@@ -25,6 +25,11 @@ export const IncomeTable: React.FC = () => {
         setShowModal(true);
     };
 
+    const onVisibleChange = (visible: boolean) => {
+        setShowModal(visible);
+        setData(undefined);
+    };
+
     const columns = [
         {
             title: 'Date',
@@ -49,7 +54,9 @@ export const IncomeTable: React.FC = () => {
         {
             title: 'Amount',
             dataIndex: 'amount',
+            className: 'column-money',
             sorter: (a: incomeType, b: incomeType) => a.amount - b.amount,
+            render: (income: number) => income + ' €',
             key: 'amount',
         },
         {
@@ -62,12 +69,7 @@ export const IncomeTable: React.FC = () => {
 
     return (
         <>
-            <FormModal
-                visible={showModal}
-                data={data}
-                onVisibleChange={visible => setShowModal(visible)}
-                type='Income'
-            />
+            <FormModal visible={showModal} data={data} onVisibleChange={onVisibleChange} type='Income' />
             <Table
                 // @ts-ignore
                 rowKey={record => record.id}
