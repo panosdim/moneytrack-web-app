@@ -5,3 +5,5 @@ export * from './incomeStatistics';
 export * from './incomeForm';
 export * from './savingsStatistics';
 export * from './formModal';
+export * from './expensesTable';
+export * from './expensesStatistics';

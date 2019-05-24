@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Modal, message, Button, Popconfirm } from 'antd';
-import { incomeType, tabType } from '../model';
+import { incomeType, tabType, expenseType } from '../model';
 import { IncomeForm } from './incomeForm';
 import axios from 'axios';
 import { useGlobal, setGlobal } from 'reactn';
@@ -8,7 +8,7 @@ import moment from 'moment';
 
 interface Props {
     visible: boolean;
-    data?: incomeType;
+    data?: incomeType | expenseType;
     onVisibleChange: (visible: boolean) => void;
     type: tabType;
 }
@@ -79,6 +79,7 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                         setVisible(false);
                         onVisibleChange(false);
                         form.resetFields();
+                        message.success('Income saved successfully!');
                     })
                     .catch(error => {
                         if (error.response && error.response.status === 400) {
@@ -108,6 +109,7 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                     setVisible(false);
                     onVisibleChange(false);
                     form.resetFields();
+                    message.success('Income deleted successfully!');
                 })
                 .catch(error => {
                     if (error.response && error.response.status === 400) {
