@@ -69,7 +69,7 @@ export const IncomeTable: React.FC = () => {
 
     return (
         <>
-            <FormModal visible={showModal} data={data} onVisibleChange={onVisibleChange} type='Income' />
+            <FormModal visible={showModal} selectedIncome={data} onVisibleChange={onVisibleChange} type='Income' />
             <Table
                 // @ts-ignore
                 rowKey={record => record.id}

@@ -1,57 +1,89 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Modal, message, Button, Popconfirm } from 'antd';
 import { incomeType, tabType, expenseType } from '../model';
-import { IncomeForm } from './incomeForm';
 import axios from 'axios';
 import { useGlobal, setGlobal } from 'reactn';
 import moment from 'moment';
+import { ExpenseForm, IncomeForm } from '.';
 
 interface Props {
     visible: boolean;
-    data?: incomeType | expenseType;
+    selectedIncome?: incomeType;
+    selectedExpense?: expenseType;
     onVisibleChange: (visible: boolean) => void;
     type: tabType;
 }
 
 export const FormModal: React.FC<Props> = (props: Props) => {
-    const { visible, data, onVisibleChange, type } = props;
+    const { visible, selectedIncome, selectedExpense, onVisibleChange, type } = props;
     const [isVisible, setVisible] = useState(visible);
     const [isLoading, setLoading] = useState(false);
     const incomeForm = useRef(null);
+    const expenseForm = useRef(null);
     const [income, setIncome] = useGlobal('income');
+    const [expenses, setExpenses] = useGlobal('expenses');
 
     useEffect(() => {
         setVisible(visible);
     }, [visible]);
 
     const handleOk = () => {
-        if (type === 'Income') {
-            saveIncome();
-        } else {
-            setVisible(false);
-            onVisibleChange(false);
+        switch (type) {
+            case 'Income':
+                saveIncome();
+                break;
+
+            case 'Expense':
+                saveExpense();
+                break;
+
+            default:
+                setVisible(false);
+                onVisibleChange(false);
+                break;
         }
     };
 
     const handleCancel = () => {
-        if (type === 'Income') {
-            const form = (incomeForm as any).current;
-            form.resetFields();
+        let form;
+        switch (type) {
+            case 'Income':
+                form = (incomeForm as any).current;
+                form.resetFields();
 
-            setVisible(false);
-            onVisibleChange(false);
-        } else {
-            setVisible(false);
-            onVisibleChange(false);
+                setVisible(false);
+                onVisibleChange(false);
+                break;
+
+            case 'Expense':
+                form = (expenseForm as any).current;
+                form.resetFields();
+
+                setVisible(false);
+                onVisibleChange(false);
+                break;
+
+            default:
+                setVisible(false);
+                onVisibleChange(false);
+                break;
         }
     };
 
     const handleDelete = () => {
-        if (type === 'Income') {
-            deleteIncome();
-        } else {
-            setVisible(false);
-            onVisibleChange(false);
+        switch (type) {
+            case 'Income':
+                deleteIncome();
+                break;
+
+            case 'Expense':
+                deleteExpense();
+                break;
+
+            default:
+                setVisible(false);
+                onVisibleChange(false);
+                break;
         }
     };
 
@@ -61,8 +93,8 @@ export const FormModal: React.FC<Props> = (props: Props) => {
         form.validateFields((err: any, values: incomeType) => {
             if (!err) {
                 setLoading(true);
-                const method = data ? 'put' : 'post';
-                const url = data ? `income/${data.id}` : 'income';
+                const method = selectedIncome ? 'put' : 'post';
+                const url = selectedIncome ? `income/${selectedIncome.id}` : 'income';
                 const date = moment(values.date).format('YYYY-MM-01');
                 const storeValues = { ...values, date: date };
 
@@ -72,8 +104,8 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                     data: storeValues,
                 })
                     .then(response => {
-                        data
-                            ? setIncome(income.map(inc => (inc.id === data.id ? response.data.data : inc)))
+                        selectedIncome
+                            ? setIncome(income.map(inc => (inc.id === selectedIncome.id ? response.data.data : inc)))
                             : setIncome([...income, response.data.data]);
                         setLoading(false);
                         setVisible(false);
@@ -96,13 +128,56 @@ export const FormModal: React.FC<Props> = (props: Props) => {
         });
     };
 
+    const saveExpense = () => {
+        const form = (expenseForm as any).current;
+
+        form.validateFields((err: any, values: expenseType) => {
+            if (!err) {
+                setLoading(true);
+                const method = selectedExpense ? 'put' : 'post';
+                const url = selectedExpense ? `expense/${selectedExpense.id}` : 'expense';
+                const date = moment(values.date).format('YYYY-MM-DD');
+                const storeValues = { ...values, date: date };
+
+                axios({
+                    method: method,
+                    url: url,
+                    data: storeValues,
+                })
+                    .then(response => {
+                        selectedExpense
+                            ? setExpenses(
+                                  expenses.map(exp => (exp.id === selectedExpense.id ? response.data.data : exp)),
+                              )
+                            : setExpenses([...expenses, response.data.data]);
+                        setLoading(false);
+                        setVisible(false);
+                        onVisibleChange(false);
+                        form.resetFields();
+                        message.success('Expense saved successfully!');
+                    })
+                    .catch(error => {
+                        if (error.response && error.response.status === 400) {
+                            // JWT Token expired
+                            setLoading(false);
+                            setGlobal({ isLoggedIn: false });
+                            message.error(error.response.data.error);
+                        } else {
+                            setLoading(false);
+                            message.error('Fail to save Expense!');
+                        }
+                    });
+            }
+        });
+    };
+
     const deleteIncome = () => {
-        if (data) {
+        if (selectedIncome) {
             setLoading(true);
             axios
-                .delete(`income/${data.id}`)
+                .delete(`income/${selectedIncome.id}`)
                 .then(response => {
-                    setIncome(income.filter(inc => inc.id !== data.id));
+                    setIncome(income.filter(inc => inc.id !== selectedIncome.id));
                     const form = (incomeForm as any).current;
 
                     setLoading(false);
@@ -125,8 +200,39 @@ export const FormModal: React.FC<Props> = (props: Props) => {
         }
     };
 
-    const title = data ? `Edit ${type}` : `Add ${type}`;
-    const footer = data
+    const deleteExpense = () => {
+        if (selectedExpense) {
+            setLoading(true);
+            axios
+                .delete(`expense/${selectedExpense.id}`)
+                .then(response => {
+                    setExpenses(expenses.filter(exp => exp.id !== selectedExpense.id));
+                    const form = (expenseForm as any).current;
+
+                    setLoading(false);
+                    setVisible(false);
+                    onVisibleChange(false);
+                    form.resetFields();
+                    message.success('Expense deleted successfully!');
+                })
+                .catch(error => {
+                    if (error.response && error.response.status === 400) {
+                        // JWT Token expired
+                        setLoading(false);
+                        setGlobal({ isLoggedIn: false });
+                        message.error(error.response.data.error);
+                    } else {
+                        setLoading(false);
+                        message.error('Fail to delete Expense!');
+                    }
+                });
+        }
+    };
+
+    const isNew: boolean = typeof selectedIncome !== 'undefined' || typeof selectedExpense !== 'undefined';
+
+    const title = isNew ? `Edit ${type}` : `Add ${type}`;
+    const footer = isNew
         ? [
               <Popconfirm
                   title={`Are you sure delete this ${type}?`}
@@ -163,9 +269,9 @@ export const FormModal: React.FC<Props> = (props: Props) => {
             footer={footer}
         >
             {type === 'Income' ? (
-                <IncomeForm ref={incomeForm} income={data} />
+                <IncomeForm ref={incomeForm} income={selectedIncome} />
             ) : type === 'Expense' ? (
-                <div>Expense</div>
+                <ExpenseForm ref={expenseForm} expense={selectedExpense} />
             ) : (
                 <div>Category</div>
             )}

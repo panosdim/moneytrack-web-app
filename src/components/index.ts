@@ -7,3 +7,4 @@ export * from './savingsStatistics';
 export * from './formModal';
 export * from './expensesTable';
 export * from './expensesStatistics';
+export * from './expenseForm';

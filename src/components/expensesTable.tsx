@@ -86,7 +86,7 @@ export const ExpensesTable: React.FC = () => {
 
     return (
         <>
-            <FormModal visible={showModal} data={data} onVisibleChange={onVisibleChange} type='Expense' />
+            <FormModal visible={showModal} selectedExpense={data} onVisibleChange={onVisibleChange} type='Expense' />
             <Table
                 // @ts-ignore
                 rowKey={record => record.id}
