@@ -13,6 +13,10 @@ setGlobal({
     income: [],
     expenses: [],
     categories: [],
+    monthIncome: 0,
+    yearIncome: 0,
+    monthExpenses: 0,
+    yearExpenses: 0,
 });
 
 const App: React.FC = () => {

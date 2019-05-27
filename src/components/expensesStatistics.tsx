@@ -5,20 +5,12 @@ import moment from 'moment';
 
 export const ExpensesStatistics: React.FC = () => {
     const [expenses] = useGlobal('expenses');
-    const [totalMonthExpenses, setTotalMonthExpenses] = useState();
+    const [totalMonthExpenses] = useGlobal('monthExpenses');
     const [totalMonthExpensesPreviousYear, setTotalMonthExpensesPreviousYear] = useState();
-    const [totalYearExpenses, setTotalYearExpenses] = useState();
+    const [totalYearExpenses] = useGlobal('yearExpenses');
     const [biggestMonthExpense, setBiggestMonthExpense] = useState();
 
     useEffect(() => {
-        setTotalMonthExpenses(
-            expenses
-                .filter(exp =>
-                    moment(exp.date).isBetween(moment().startOf('month'), moment().endOf('month'), undefined, '[]'),
-                )
-                .reduce((total, exp) => total + exp.amount, 0),
-        );
-
         setTotalMonthExpensesPreviousYear(
             expenses
                 .filter(exp =>
@@ -32,14 +24,6 @@ export const ExpensesStatistics: React.FC = () => {
                         undefined,
                         '[]',
                     ),
-                )
-                .reduce((total, exp) => total + exp.amount, 0),
-        );
-
-        setTotalYearExpenses(
-            expenses
-                .filter(exp =>
-                    moment(exp.date).isBetween(moment().startOf('year'), moment().endOf('year'), undefined, '[]'),
                 )
                 .reduce((total, exp) => total + exp.amount, 0),
         );

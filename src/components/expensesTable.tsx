@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Table } from 'antd';
 import { useGlobal } from 'reactn';
 import { SearchProps } from './searchProps';
-import { expenseType, categoryType } from '../model';
+import { expenseType } from '../model';
 import moment from 'moment';
 import { FormModal } from '.';
 

@@ -5,19 +5,11 @@ import moment from 'moment';
 
 export const IncomeStatistics: React.FC = () => {
     const [income] = useGlobal('income');
-    const [totalMonthIncome, setTotalMonthIncome] = useState();
+    const [totalMonthIncome] = useGlobal('monthIncome');
+    const [totalYearIncome] = useGlobal('yearIncome');
     const [totalMonthIncomePreviousYear, setTotalMonthIncomePreviousYear] = useState();
-    const [totalYearIncome, setTotalYearIncome] = useState();
 
     useEffect(() => {
-        setTotalMonthIncome(
-            income
-                .filter(inc =>
-                    moment(inc.date).isBetween(moment().startOf('month'), moment().endOf('month'), undefined, '[]'),
-                )
-                .reduce((total, inc) => total + inc.amount, 0),
-        );
-
         setTotalMonthIncomePreviousYear(
             income
                 .filter(inc =>
@@ -34,14 +26,7 @@ export const IncomeStatistics: React.FC = () => {
                 )
                 .reduce((total, inc) => total + inc.amount, 0),
         );
-
-        setTotalYearIncome(
-            income
-                .filter(inc =>
-                    moment(inc.date).isBetween(moment().startOf('year'), moment().endOf('year'), undefined, '[]'),
-                )
-                .reduce((total, inc) => total + inc.amount, 0),
-        );
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [income]);
 
     return (

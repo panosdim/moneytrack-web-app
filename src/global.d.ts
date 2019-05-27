@@ -8,5 +8,9 @@ declare module 'reactn/default' {
         income: Array<incomeType>;
         expenses: Array<expenseType>;
         categories: Array<categoryType>;
+        monthIncome: number;
+        yearIncome: number;
+        monthExpenses: number;
+        yearExpenses: number;
     }
 }
