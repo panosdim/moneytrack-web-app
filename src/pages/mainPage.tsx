@@ -4,7 +4,7 @@ import { PageHeader, Tabs, Button, Typography, Icon, message } from 'antd';
 import income from '../images/income.png';
 import expense from '../images/expense.png';
 import axios from 'axios';
-import { IncomeTab, ExpensesTab } from '.';
+import { IncomeTab, ExpensesTab, CategoriesTab } from '.';
 import { SavingStatistics, FormModal } from '../components';
 import { tabType } from '../model';
 
@@ -118,7 +118,7 @@ export const MainPage: React.FC = () => {
                             }
                             key='Category'
                         >
-                            Categories
+                            <CategoriesTab />
                         </TabPane>
                         <TabPane
                             tab={

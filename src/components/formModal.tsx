@@ -235,6 +235,8 @@ export const FormModal: React.FC<Props> = (props: Props) => {
     const footer = isNew
         ? [
               <Popconfirm
+                  //@ts-ignore
+                  key={type === 'Income' ? selectedIncome.id : selectedExpense.id}
                   title={`Are you sure delete this ${type}?`}
                   onConfirm={handleDelete}
                   okText='Yes'

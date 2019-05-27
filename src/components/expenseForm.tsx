@@ -80,7 +80,9 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
                         }
                     >
                         {categories.map(category => (
-                            <Option value={category.id}>{category.category}</Option>
+                            <Option key={category.id} value={category.id}>
+                                {category.category}
+                            </Option>
                         ))}
                     </Select>,
                 )}
