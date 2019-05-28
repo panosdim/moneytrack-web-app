@@ -79,11 +79,14 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
                             option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
                     >
-                        {categories.map(category => (
-                            <Option key={category.id} value={category.id}>
-                                {category.category}
-                            </Option>
-                        ))}
+                        {categories
+                            .sort((a, b) => a.count - b.count)
+                            .reverse()
+                            .map(category => (
+                                <Option key={category.id} value={category.id}>
+                                    {category.category}
+                                </Option>
+                            ))}
                     </Select>,
                 )}
             </Form.Item>

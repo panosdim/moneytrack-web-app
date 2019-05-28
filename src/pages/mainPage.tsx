@@ -5,7 +5,7 @@ import income from '../images/income.png';
 import expense from '../images/expense.png';
 import axios from 'axios';
 import { IncomeTab, ExpensesTab, CategoriesTab } from '.';
-import { SavingStatistics, FormModal } from '../components';
+import { SavingStatistics, FormModal, CategoryHandle } from '../components';
 import { tabType } from '../model';
 
 const TabPane = Tabs.TabPane;
@@ -61,11 +61,14 @@ export const MainPage: React.FC = () => {
         setShowModal(true);
     };
 
-    const operations = (
-        <Button onClick={AddNew} icon='plus' type='primary'>
-            {selectedTab}
-        </Button>
-    );
+    const operations =
+        selectedTab === 'Category' ? (
+            <CategoryHandle />
+        ) : (
+            <Button onClick={AddNew} icon='plus' type='primary'>
+                {selectedTab}
+            </Button>
+        );
 
     return (
         <>

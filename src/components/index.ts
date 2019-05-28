@@ -8,3 +8,4 @@ export * from './formModal';
 export * from './expensesTable';
 export * from './expensesStatistics';
 export * from './expenseForm';
+export * from './categoryHandle';
