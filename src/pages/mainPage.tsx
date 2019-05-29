@@ -4,7 +4,7 @@ import { PageHeader, Tabs, Button, Typography, Icon, message } from 'antd';
 import income from '../images/income.png';
 import expense from '../images/expense.png';
 import axios from 'axios';
-import { IncomeTab, ExpensesTab, CategoriesTab } from '.';
+import { IncomeTab, ExpensesTab, CategoriesTab, DashboardTab } from '.';
 import { SavingStatistics, FormModal, CategoryHandle } from '../components';
 import { tabType } from '../model';
 
@@ -132,7 +132,7 @@ export const MainPage: React.FC = () => {
                             }
                             key='Dashboard'
                         >
-                            Dashboard
+                            <DashboardTab />
                         </TabPane>
                     </Tabs>
                 }
