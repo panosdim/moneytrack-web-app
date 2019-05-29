@@ -26,7 +26,6 @@ export const IncomeStatistics: React.FC = () => {
                 )
                 .reduce((total, inc) => total + inc.amount, 0),
         );
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [income]);
 
     return (

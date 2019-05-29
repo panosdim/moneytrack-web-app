@@ -12,7 +12,7 @@ export const CategoriesTab: React.FC = () => {
     const deleteCategory = (id: number) => {
         axios
             .delete(`category/${id}`)
-            .then(response => {
+            .then(() => {
                 setCategories(categories.filter(cat => cat.id !== id));
                 message.success('Category deleted successfully!');
             })

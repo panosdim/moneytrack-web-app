@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useGlobal, setGlobal } from 'reactn';
 import axios from 'axios';
 import { message, Input, Icon, Button, Popover } from 'antd';
@@ -11,19 +11,18 @@ interface Props {
 export const CategoryHandle: React.FC<Props> = (props: Props) => {
     const { category } = props;
     const [visible, setVisible] = useState(false);
-    const [categoryName, setCategoryName] = useState('');
+    const [categoryName, setCategoryName] = useState(category ? category.category : '');
     const [categories, setCategories] = useGlobal('categories');
-
-    // TODO: Category Edit second time is not working
-    useEffect(() => {
-        if (category) {
-            setCategoryName(category.category);
-        }
-    }, [category]);
 
     const handleSave = () => {
         // TODO: Check if category name changed before send the post
         if (categoryName) {
+            // Check if category name changed
+            if (category && category.category === categoryName) {
+                setVisible(false);
+                return;
+            }
+
             const method = category ? 'put' : 'post';
             const url = category ? `category/${category.id}` : 'category';
             const storeValues = { ...category, category: categoryName };
@@ -40,7 +39,6 @@ export const CategoryHandle: React.FC<Props> = (props: Props) => {
 
                     message.success('Category saved successfully!');
                     setVisible(false);
-                    setCategoryName('');
                 })
                 .catch(error => {
                     if (error.response && error.response.status === 400) {
@@ -55,10 +53,12 @@ export const CategoryHandle: React.FC<Props> = (props: Props) => {
                     }
                 });
         }
+        setVisible(false);
     };
 
     const handleVisibleChange = (visible: boolean) => {
         setVisible(visible);
+        category ? setCategoryName(category.category) : setCategoryName('');
     };
 
     const content = (
