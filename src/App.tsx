@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Spin } from 'antd';
 import { LoginPage, MainPage } from './pages';
 
-axios.defaults.baseURL = 'http://localhost:8000/';
+axios.defaults.baseURL = 'https://api.moneytrack.cc.nf/';
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
 
 setGlobal({
