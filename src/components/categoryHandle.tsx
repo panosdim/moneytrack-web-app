@@ -15,7 +15,6 @@ export const CategoryHandle: React.FC<Props> = (props: Props) => {
     const [categories, setCategories] = useGlobal('categories');
 
     const handleSave = () => {
-        // TODO: Check if category name changed before send the post
         if (categoryName) {
             // Check if category name changed
             if (category && category.category === categoryName) {

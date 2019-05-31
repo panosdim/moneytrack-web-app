@@ -27,10 +27,18 @@ export const getLastYears = (numOfYears: number): number[] => {
     return years;
 };
 
+/**
+ * Return the month from a date string
+ * @param date A date string in YYYY-MM-DD format.
+ */
 export const getMonth = (date: string): number => {
     return Number(date.split('-')[1]);
 };
 
+/**
+ * Return the year from a date string
+ * @param date A date string in YYYY-MM-DD format.
+ */
 export const getYear = (date: string): number => {
     return Number(date.split('-')[0]);
 };
