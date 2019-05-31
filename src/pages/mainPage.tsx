@@ -87,7 +87,7 @@ export const MainPage: React.FC = () => {
         <>
             {isLoading ? (
                 <div className='center'>
-                    <Spin size='large' />
+                    <Spin tip='Downloading data from server...' size='large' />
                 </div>
             ) : (
                 <>
