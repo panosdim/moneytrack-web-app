@@ -5,6 +5,7 @@ import { SearchProps } from './searchProps';
 import { incomeType } from '../model';
 import moment from 'moment';
 import { FormModal } from '.';
+import { moneyFmt } from './moneyFormatter';
 
 export const IncomeTable: React.FC = () => {
     const [income] = useGlobal('income');
@@ -56,7 +57,7 @@ export const IncomeTable: React.FC = () => {
             dataIndex: 'amount',
             className: 'column-money',
             sorter: (a: incomeType, b: incomeType) => a.amount - b.amount,
-            render: (income: number) => income + ' €',
+            render: (income: number) => moneyFmt.format(income),
             key: 'amount',
         },
         {
