@@ -22,7 +22,7 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
             setFieldsValue({
                 date: moment(expense.date),
                 amount: expense.amount,
-                category: expense.category,
+                category: Number(expense.category),
                 comment: expense.comment,
             });
         }

@@ -13,7 +13,7 @@ const { Title } = Typography;
 
 export const MainPage: React.FC = () => {
     const [isLoggedIn] = useGlobal('isLoggedIn');
-    const [selectedTab, setSelectedTab] = useState<tabType>('Income');
+    const [selectedTab, setSelectedTab] = useState<tabType>('Dashboard');
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [isIncomeFetched, setIncomeFetched] = useState(false);
@@ -116,6 +116,17 @@ export const MainPage: React.FC = () => {
                                 <TabPane
                                     tab={
                                         <span>
+                                            <Icon type='dashboard' />
+                                            Dashboard
+                                        </span>
+                                    }
+                                    key='Dashboard'
+                                >
+                                    <DashboardTab />
+                                </TabPane>
+                                <TabPane
+                                    tab={
+                                        <span>
                                             <img
                                                 alt={''}
                                                 style={{ marginRight: '8px' }}
@@ -157,17 +168,6 @@ export const MainPage: React.FC = () => {
                                     key='Category'
                                 >
                                     <CategoriesTab />
-                                </TabPane>
-                                <TabPane
-                                    tab={
-                                        <span>
-                                            <Icon type='dashboard' />
-                                            Dashboard
-                                        </span>
-                                    }
-                                    key='Dashboard'
-                                >
-                                    <DashboardTab />
                                 </TabPane>
                             </Tabs>
                         }

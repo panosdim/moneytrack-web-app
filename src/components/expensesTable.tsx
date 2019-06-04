@@ -33,7 +33,7 @@ export const ExpensesTable: React.FC = () => {
     };
 
     const categoryName = (categoryID: number): string => {
-        const found = categories.find(cat => cat.id === categoryID);
+        const found = categories.find(cat => cat.id === Number(categoryID));
         return found ? found.category : '';
     };
 
