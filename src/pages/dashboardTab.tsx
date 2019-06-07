@@ -98,10 +98,13 @@ export const DashboardTab: React.FC = () => {
         let row: Partial<monthlyChartType> = {};
 
         for (const year in monthlyIncomeData[month]) {
-            const obj =
-                year !== 'name'
-                    ? { [year]: Number(monthlyIncomeData[month][year]) - Number(monthlyExpensesData[month][year]) }
-                    : { name: monthlyIncomeData[month][year] };
+            const income =
+                monthlyIncomeData[month] && monthlyIncomeData[month][year] ? Number(monthlyIncomeData[month][year]) : 0;
+            const expenses =
+                monthlyExpensesData[month] && monthlyExpensesData[month][year]
+                    ? Number(monthlyExpensesData[month][year])
+                    : 0;
+            const obj = year !== 'name' ? { [year]: income - expenses } : { name: monthlyIncomeData[month][year] };
 
             row = { ...row, ...obj };
         }
