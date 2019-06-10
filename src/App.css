@@ -23,14 +23,6 @@
     left: 0;
 }
 
-h2.logo {
-    padding: 0px 20px;
-    float: left;
-    color: white;
-    margin: 0px;
-    line-height: 64px;
-}
-
 th.column-money,
 td.column-money {
     text-align: right !important;

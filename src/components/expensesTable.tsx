@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table } from 'antd';
+import { Table, Typography } from 'antd';
 import { useGlobal } from 'reactn';
 import { SearchProps } from './searchProps';
 import { expenseType } from '../model';
@@ -7,11 +7,14 @@ import moment from 'moment';
 import { FormModal } from '.';
 import { moneyFmt } from './moneyFormatter';
 
+const { Title } = Typography;
+
 export const ExpensesTable: React.FC = () => {
     const [expenses] = useGlobal('expenses');
     const [categories] = useGlobal('categories');
     const [showModal, setShowModal] = useState(false);
     const [data, setData] = useState<expenseType>();
+    const [total, setTotal] = useState<number>(expenses.reduce((total, exp) => total + exp.amount, 0));
 
     const dateFilter = (value: string, record: expenseType) => {
         if (value === 'This Month') {
@@ -36,6 +39,13 @@ export const ExpensesTable: React.FC = () => {
         const found = categories.find(cat => cat.id === Number(categoryID));
         return found ? found.category : '';
     };
+
+    const calculateTotal = (
+        _pagination: any,
+        _filters: any,
+        _sorter: any,
+        extra: { currentDataSource: expenseType[] },
+    ) => setTotal(extra.currentDataSource.reduce((total, exp) => total + exp.amount, 0));
 
     const columns = [
         {
@@ -105,6 +115,12 @@ export const ExpensesTable: React.FC = () => {
                         onMouseLeave: () => {}, // mouse leave row
                     };
                 }}
+                footer={() => (
+                    <>
+                        <Title level={4}>Total: {moneyFmt.format(total)}</Title>
+                    </>
+                )}
+                onChange={calculateTotal}
             />
         </>
     );

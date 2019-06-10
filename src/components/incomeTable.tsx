@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table } from 'antd';
+import { Table, Typography } from 'antd';
 import { useGlobal } from 'reactn';
 import { SearchProps } from './searchProps';
 import { incomeType } from '../model';
@@ -7,10 +7,13 @@ import moment from 'moment';
 import { FormModal } from '.';
 import { moneyFmt } from './moneyFormatter';
 
+const { Title } = Typography;
+
 export const IncomeTable: React.FC = () => {
     const [income] = useGlobal('income');
     const [showModal, setShowModal] = useState(false);
     const [data, setData] = useState<incomeType>();
+    const [total, setTotal] = useState<number>(income.reduce((total, inc) => total + inc.amount, 0));
 
     const dateFilter = (value: string, record: incomeType) => {
         if (value === 'This Month') {
@@ -30,6 +33,13 @@ export const IncomeTable: React.FC = () => {
         setShowModal(visible);
         setData(undefined);
     };
+
+    const calculateTotal = (
+        _pagination: any,
+        _filters: any,
+        _sorter: any,
+        extra: { currentDataSource: incomeType[] },
+    ) => setTotal(extra.currentDataSource.reduce((total, inc) => total + inc.amount, 0));
 
     const columns = [
         {
@@ -88,6 +98,12 @@ export const IncomeTable: React.FC = () => {
                         onMouseLeave: event => {}, // mouse leave row
                     };
                 }}
+                footer={() => (
+                    <>
+                        <Title level={4}>Total: {moneyFmt.format(total)}</Title>
+                    </>
+                )}
+                onChange={calculateTotal}
             />
         </>
     );
