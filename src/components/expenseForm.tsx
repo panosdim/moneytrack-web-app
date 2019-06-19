@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { expenseType } from '../model';
-import Form, { FormComponentProps } from 'antd/lib/form';
-import { Input, DatePicker, Icon, Select } from 'antd';
+import { Input, DatePicker, Icon, Select, Form } from 'antd';
 import moment from 'moment';
 import { ReactComponent as EuroIconSvg } from '../images/euro.svg';
 import { useGlobal } from 'reactn';
+import { FormComponentProps } from 'antd/lib/form';
 
 interface Props extends FormComponentProps {
     expense?: expenseType;
@@ -12,7 +12,15 @@ interface Props extends FormComponentProps {
 
 const Option = Select.Option;
 
+// @ts-ignore
+moment.defineLocale('en-us', {
+    week: {
+        dow: 1, // Monday is the first day of the week.
+    },
+});
+
 const NormalExpenseForm: React.FC<Props> = (props: Props) => {
+    // @ts-ignore
     const { form, expense } = props;
     const { getFieldDecorator, setFieldsValue } = form;
     const [categories] = useGlobal('categories');
@@ -39,7 +47,7 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
                             message: 'Please enter a valid date!',
                         },
                     ],
-                })(<DatePicker style={{ width: '100%' }} format='ddd D MMMM YYYY' />)}
+                })(<DatePicker locale={{ firstWeekDay: 1 }} style={{ width: '100%' }} format='ddd D MMMM YYYY' />)}
             </Form.Item>
             <Form.Item label='Amount'>
                 {getFieldDecorator('amount', {
@@ -51,6 +59,7 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
                         },
                     ],
                 })(
+                    // @ts-ignore
                     <Input
                         // @ts-ignore
                         suffix={<Icon component={EuroIconSvg} style={{ color: 'rgba(0,0,0,.45)' }} />}
@@ -92,6 +101,7 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
             </Form.Item>
             <Form.Item label='Comment'>
                 {getFieldDecorator('comment')(
+                    // @ts-ignore
                     <Input style={{ width: '100%' }} type='text' placeholder='Enter Comment' />,
                 )}
             </Form.Item>
