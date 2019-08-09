@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { setGlobal, useGlobal } from 'reactn';
-import { PageHeader, Tabs, Button, Typography, Icon, message, Spin } from 'antd';
+import { PageHeader, Tabs, Button, Icon, message, Spin } from 'antd';
 import income from '../images/income.png';
 import expense from '../images/expense.png';
 import axios from 'axios';
@@ -9,7 +9,6 @@ import { SavingStatistics, FormModal, CategoryHandle } from '../components';
 import { tabType } from '../model';
 
 const TabPane = Tabs.TabPane;
-const { Title } = Typography;
 
 export const MainPage: React.FC = () => {
     const [isLoggedIn] = useGlobal('isLoggedIn');
