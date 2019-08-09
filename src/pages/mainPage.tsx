@@ -91,7 +91,6 @@ export const MainPage: React.FC = () => {
                 </div>
             ) : (
                 <>
-                    <Title style={{ textAlign: 'center' }}>Money Track App</Title>
                     <FormModal
                         visible={showModal}
                         onVisibleChange={visible => setShowModal(visible)}
