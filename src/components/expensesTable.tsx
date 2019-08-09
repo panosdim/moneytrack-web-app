@@ -3,8 +3,7 @@ import { Table, Typography } from 'antd';
 import { useGlobal } from 'reactn';
 import { SearchProps } from './searchProps';
 import { expenseType } from '../model';
-import moment from 'moment';
-import { FormModal } from '.';
+import { FormModal, DateProps } from '.';
 import { moneyFmt } from './moneyFormatter';
 
 const { Title } = Typography;
@@ -15,15 +14,6 @@ export const ExpensesTable: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
     const [data, setData] = useState<expenseType>();
     const [total, setTotal] = useState<number>(expenses.reduce((total, exp) => total + exp.amount, 0));
-
-    const dateFilter = (value: string, record: expenseType) => {
-        if (value === 'This Month') {
-            return moment(record.date).isBetween(moment().startOf('month'), moment().endOf('month'), undefined, '[]');
-        }
-        if (value === 'This Year') {
-            return moment(record.date).isBetween(moment().startOf('year'), moment().endOf('year'), undefined, '[]');
-        }
-    };
 
     const handleClick = (record: expenseType) => {
         setData(record);
@@ -52,21 +42,7 @@ export const ExpensesTable: React.FC = () => {
             title: 'Date',
             dataIndex: 'date',
             key: 'date',
-            filters: [
-                {
-                    text: 'This Month',
-                    value: 'This Month',
-                },
-                {
-                    text: 'This Year',
-                    value: 'This Year',
-                },
-            ],
-            filterMultiple: false,
-            onFilter: dateFilter,
-            sorter: (a: expenseType, b: expenseType) => a.date.localeCompare(b.date),
-            render: (date: Date) => moment(date).format('ddd D MMMM YYYY'),
-            defaultSortOrder: 'descend',
+            ...DateProps(),
         },
         {
             title: 'Amount',
