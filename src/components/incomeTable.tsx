@@ -5,6 +5,7 @@ import { SearchProps } from './searchProps';
 import { incomeType } from '../model';
 import { FormModal, DateProps } from '.';
 import { moneyFmt } from './moneyFormatter';
+import moment from 'moment';
 
 const { Title } = Typography;
 
@@ -36,6 +37,7 @@ export const IncomeTable: React.FC = () => {
             title: 'Date',
             dataIndex: 'date',
             key: 'date',
+            render: (date: Date) => moment(date).format('MMMM YYYY'),
             ...DateProps(),
         },
         {
@@ -80,6 +82,9 @@ export const IncomeTable: React.FC = () => {
                     </>
                 )}
                 onChange={calculateTotal}
+                pagination={{ pageSize: 100 }}
+                scroll={{ y: 450 }}
+                size='small'
             />
         </>
     );

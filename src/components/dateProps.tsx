@@ -71,7 +71,6 @@ export const DateProps = () => {
             return moment(record.date).isBetween(value[0], value[1], undefined, '[]');
         },
         sorter: (a: expenseType, b: expenseType) => a.date.localeCompare(b.date),
-        render: (date: Date) => moment(date).format('ddd D MMMM YYYY'),
     });
 
     return getColumnDateProps();

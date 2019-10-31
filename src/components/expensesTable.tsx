@@ -5,6 +5,7 @@ import { SearchProps } from './searchProps';
 import { expenseType } from '../model';
 import { FormModal, DateProps } from '.';
 import { moneyFmt } from './moneyFormatter';
+import moment from 'moment';
 
 const { Title } = Typography;
 
@@ -42,6 +43,7 @@ export const ExpensesTable: React.FC = () => {
             title: 'Date',
             dataIndex: 'date',
             key: 'date',
+            render: (date: Date) => moment(date).format('ddd D MMMM YYYY'),
             ...DateProps(),
         },
         {
@@ -97,6 +99,9 @@ export const ExpensesTable: React.FC = () => {
                     </>
                 )}
                 onChange={calculateTotal}
+                pagination={{ pageSize: 100 }}
+                scroll={{ y: 450 }}
+                size='small'
             />
         </>
     );
