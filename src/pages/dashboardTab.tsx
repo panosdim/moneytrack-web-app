@@ -75,14 +75,14 @@ export const DashboardTab: React.FC = () => {
             ...incomePerMonth[key],
         }));
 
-    const expensesPerMonth = expenses.reduce((months, inc) => {
-        const month = getMonth(inc.date);
-        const year = getYear(inc.date);
+    const expensesPerMonth = expenses.reduce((months, exp) => {
+        const month = getMonth(exp.date);
+        const year = getYear(exp.date);
         if (!months[month]) {
             months[month] = {};
         }
 
-        months[month][year] = (months[month][year] || 0) + inc.amount;
+        months[month][year] = (months[month][year] || 0) + exp.amount;
         return months;
     }, {});
 

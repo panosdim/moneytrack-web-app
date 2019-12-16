@@ -68,7 +68,7 @@ export const DateProps = () => {
         filterMultiple: false,
         defaultSortOrder: 'descend',
         onFilter: (value: string, record: expenseType) => {
-            return moment(record.date).isBetween(value[0], value[1], undefined, '[]');
+            return moment(record.date).isBetween(value[0], value[1], 'day', '[]');
         },
         sorter: (a: expenseType, b: expenseType) => a.date.localeCompare(b.date),
     });
