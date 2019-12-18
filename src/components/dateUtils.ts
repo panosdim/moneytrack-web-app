@@ -1,4 +1,4 @@
-const months: string[] = [
+export const MONTHS: monthNames[] = [
     'January',
     'February',
     'March',
@@ -13,8 +13,40 @@ const months: string[] = [
     'December',
 ];
 
-export const getMonthName = (monthnum: number): string => {
-    return months[monthnum - 1] || '';
+type monthNames =
+    'January'
+    | 'February'
+    | 'March'
+    | 'April'
+    | 'May'
+    | 'June'
+    | 'July'
+    | 'August'
+    | 'September'
+    | 'October'
+    | 'November'
+    | 'December';
+
+export type shortMonthNames =
+    'Jan'
+    | 'Feb'
+    | 'Mar'
+    | 'Apr'
+    | 'May'
+    | 'Jun'
+    | 'Juy'
+    | 'Aug'
+    | 'Sep'
+    | 'Oct'
+    | 'Nov'
+    | 'Dec';
+
+export const getMonthName = (monthNum: number): monthNames => {
+    return MONTHS[monthNum - 1] || '';
+};
+
+export const getShortMonthName = (monthNum: number): shortMonthNames => {
+    return MONTHS[monthNum - 1].substring(0, 3) as shortMonthNames || '';
 };
 
 export const getLastYears = (numOfYears: number): number[] => {

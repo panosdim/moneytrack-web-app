@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { incomeType } from '../model';
 import Form, { FormComponentProps } from 'antd/lib/form';
-import { Input, DatePicker, Icon } from 'antd';
+import { DatePicker, Icon, Input } from 'antd';
 import moment from 'moment';
 import { ReactComponent as EuroIconSvg } from '../images/euro.svg';
 
@@ -29,13 +29,14 @@ const NormalIncomeForm: React.FC<Props> = (props: Props) => {
         <Form>
             <Form.Item label='Date'>
                 {getFieldDecorator('date', {
+                    initialValue: moment(),
                     rules: [
                         {
                             required: true,
                             message: 'Please enter a valid date!',
                         },
                     ],
-                })(<MonthPicker style={{ width: '100%' }} format='MMMM YYYY' />)}
+                })(<MonthPicker style={{ width: '100%' }} format='MMMM YYYY'/>)}
             </Form.Item>
             <Form.Item label='Amount'>
                 {getFieldDecorator('amount', {
@@ -49,7 +50,7 @@ const NormalIncomeForm: React.FC<Props> = (props: Props) => {
                 })(
                     <Input
                         // @ts-ignore
-                        suffix={<Icon component={EuroIconSvg} style={{ color: 'rgba(0,0,0,.45)' }} />}
+                        suffix={<Icon component={EuroIconSvg} style={{ color: 'rgba(0,0,0,.45)' }}/>}
                         style={{ width: '100%' }}
                         type='number'
                         placeholder='Enter Amount'
@@ -58,7 +59,7 @@ const NormalIncomeForm: React.FC<Props> = (props: Props) => {
             </Form.Item>
             <Form.Item label='Comment'>
                 {getFieldDecorator('comment')(
-                    <Input style={{ width: '100%' }} type='text' placeholder='Enter Comment' />,
+                    <Input style={{ width: '100%' }} type='text' placeholder='Enter Comment'/>,
                 )}
             </Form.Item>
         </Form>

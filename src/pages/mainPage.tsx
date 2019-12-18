@@ -115,7 +115,7 @@ export const MainPage: React.FC = () => {
                                     tab={
                                         <span>
                                             <Icon type='dashboard' />
-                                            Dashboard
+                                            Charts
                                         </span>
                                     }
                                     key='Dashboard'

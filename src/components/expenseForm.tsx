@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { expenseType } from '../model';
-import { Input, DatePicker, Icon, Select, Form } from 'antd';
+import { DatePicker, Form, Icon, Input, Select } from 'antd';
 import moment from 'moment';
 import { ReactComponent as EuroIconSvg } from '../images/euro.svg';
 import { useGlobal } from 'reactn';
@@ -41,13 +41,15 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
         <Form>
             <Form.Item label='Date'>
                 {getFieldDecorator('date', {
+                    initialValue: moment(),
                     rules: [
                         {
                             required: true,
                             message: 'Please enter a valid date!',
                         },
                     ],
-                })(<DatePicker locale={{ firstWeekDay: 1 }} style={{ width: '100%' }} format='ddd D MMMM YYYY' />)}
+                })(<DatePicker locale={{ firstWeekDay: 1 }} style={{ width: '100%' }}
+                               format='ddd D MMMM YYYY'/>)}
             </Form.Item>
             <Form.Item label='Amount'>
                 {getFieldDecorator('amount', {
@@ -62,7 +64,7 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
                     // @ts-ignore
                     <Input
                         // @ts-ignore
-                        suffix={<Icon component={EuroIconSvg} style={{ color: 'rgba(0,0,0,.45)' }} />}
+                        suffix={<Icon component={EuroIconSvg} style={{ color: 'rgba(0,0,0,.45)' }}/>}
                         style={{ width: '100%' }}
                         type='number'
                         placeholder='Enter Amount'
@@ -102,7 +104,7 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
             <Form.Item label='Comment'>
                 {getFieldDecorator('comment')(
                     // @ts-ignore
-                    <Input style={{ width: '100%' }} type='text' placeholder='Enter Comment' />,
+                    <Input style={{ width: '100%' }} type='text' placeholder='Enter Comment'/>,
                 )}
             </Form.Item>
         </Form>
