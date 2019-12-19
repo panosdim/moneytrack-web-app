@@ -22,11 +22,12 @@ import {
     MONTHS,
     shortMonthNames
 } from '../components';
-import { Col, Row, Select, Typography } from 'antd';
+import { Col, List, Modal, Row, Select, Typography } from 'antd';
 import { categoryType, expenseType } from '../model';
+import moment from 'moment';
 
 const { Option } = Select;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 type monthlyChartType = {
     name: shortMonthNames;
     value: number;
@@ -98,6 +99,52 @@ export const DashboardTab: React.FC = () => {
         setMonth(value);
     };
 
+    const handleClick = (data, index) => {
+        console.log(data);
+        console.log(index);
+        const cat = categories.find(cat => cat.category === data.name);
+        if (!cat) {
+            return;
+        }
+        const catId = cat.id;
+        const expensesForCat = expenses.filter(exp => {
+            const itmMonth = getMonthName(getMonth(exp.date));
+            const itmYear = getYear(exp.date);
+            return itmMonth === month && itmYear === year && catId === Number(exp.category);
+        }).sort((a: expenseType, b: expenseType) => b.amount - a.amount);
+        Modal.info({
+            title: `Expenses for ${data.name}`,
+            content: (
+                <div>
+                    <List
+                        size="small"
+                        itemLayout="horizontal"
+                        dataSource={expensesForCat}
+                        footer={
+                            <div>
+                                <Title level={4}>
+                                    Total: <Text type="danger"
+                                                 strong>{moneyFmt.format(expensesForCat.reduce((total, exp) => total + exp.amount, 0))}</Text>
+                                </Title>
+                            </div>
+                        }
+                        renderItem={item => (
+                            <List.Item>
+                                <Text mark>{moment(item.date).format('DD MMMM YYYY')}</Text>
+                                &nbsp;&nbsp;&nbsp;
+                                <Text type="danger" strong>{moneyFmt.format(item.amount)}</Text>
+                                &nbsp;&nbsp;&nbsp;
+                                <Text type="secondary">{item.comment}</Text>
+                            </List.Item>
+                        )}
+                    />
+                </div>
+            ),
+            onOk() {
+            },
+        });
+    };
+
     return (
         <>
             <Row style={{ padding: '16px' }}>
@@ -125,7 +172,7 @@ export const DashboardTab: React.FC = () => {
                                 <XAxis dataKey='name' interval={0}/>
                                 <YAxis unit={'\u20AC'}/>
                                 <Tooltip formatter={((value: number) => moneyFmt.format(value)) as TooltipFormatter}/>
-                                <Bar dataKey="value" fill='#428bca'/>
+                                <Bar dataKey="value" fill='#428bca' onClick={handleClick}/>
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
