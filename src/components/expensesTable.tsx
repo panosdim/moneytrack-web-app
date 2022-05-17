@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
 import { Table, Typography } from 'antd';
-import { useGlobal } from 'reactn';
-import { SearchProps } from './searchProps';
-import { expenseType } from '../model';
-import { DateProps, FormModal } from '.';
-import { moneyFmt } from './moneyFormatter';
-import moment from 'moment';
 import { ColumnProps } from 'antd/es/table';
+import moment from 'moment';
+import React, { useState } from 'react';
+import { useRecoilValue } from 'recoil';
+import { DateProps, FormModal } from '.';
+import { categoriesState, expensesState } from '../model';
+import { expenseType } from '../model/data';
+import { moneyFmt } from './moneyFormatter';
+import { SearchProps } from './searchProps';
 
-const {Title} = Typography;
+const { Title } = Typography;
 
 export const ExpensesTable: React.FC = () => {
-    const [expenses] = useGlobal('expenses');
-    const [categories] = useGlobal('categories');
+    const expenses = useRecoilValue(expensesState);
+    const categories = useRecoilValue(categoriesState);
     const [showModal, setShowModal] = useState(false);
     const [data, setData] = useState<expenseType>();
     const [total, setTotal] = useState<number>(expenses.reduce((total, exp) => total + exp.amount, 0));
@@ -28,7 +29,7 @@ export const ExpensesTable: React.FC = () => {
     };
 
     const categoryName = (categoryID: number): string => {
-        const found = categories.find(cat => cat.id === Number(categoryID));
+        const found = categories.find((cat) => cat.id === Number(categoryID));
         return found ? found.category : '';
     };
 
@@ -58,11 +59,11 @@ export const ExpensesTable: React.FC = () => {
         {
             title: 'Category',
             dataIndex: 'category',
-            filters: categories.map(category => ({
+            filters: categories.map((category) => ({
                 text: category.category,
                 value: String(category.id),
             })),
-            onFilter: (value: number, record: expenseType) => value === record.category,
+            onFilter: (value: number | string | boolean, record: expenseType) => value === record.category,
             render: (category: number) => categoryName(category),
             key: 'category',
         },
@@ -76,24 +77,20 @@ export const ExpensesTable: React.FC = () => {
 
     return (
         <>
-            <FormModal visible={showModal} selectedExpense={data} onVisibleChange={onVisibleChange} type='Expense'/>
+            <FormModal visible={showModal} selectedExpense={data} onVisibleChange={onVisibleChange} type='Expense' />
             <Table<expenseType>
                 rowKey={(record) => String(record.id)}
                 dataSource={expenses}
                 columns={columns}
-                onRow={record => {
+                onRow={(record) => {
                     return {
                         onClick: () => {
                             handleClick(record);
                         }, // click row
-                        onDoubleClick: () => {
-                        }, // double click row
-                        onContextMenu: () => {
-                        }, // right button click row
-                        onMouseEnter: () => {
-                        }, // mouse enter row
-                        onMouseLeave: () => {
-                        }, // mouse leave row
+                        onDoubleClick: () => {}, // double click row
+                        onContextMenu: () => {}, // right button click row
+                        onMouseEnter: () => {}, // mouse enter row
+                        onMouseLeave: () => {}, // mouse leave row
                     };
                 }}
                 footer={() => (
@@ -102,8 +99,8 @@ export const ExpensesTable: React.FC = () => {
                     </>
                 )}
                 onChange={calculateTotal}
-                pagination={{pageSize: 100}}
-                scroll={{y: 450}}
+                pagination={{ pageSize: 100 }}
+                scroll={{ y: 450 }}
                 size='small'
             />
         </>

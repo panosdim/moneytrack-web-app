@@ -1,22 +1,31 @@
-import React, { useEffect } from 'react';
-import { Card, Statistic, Icon, Row, Col, Progress } from 'antd';
-import { useGlobal } from 'reactn';
+import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
+import { Card, Col, Progress, Row, Statistic } from 'antd';
 import moment from 'moment';
+import React, { useEffect } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import {
+    expensesState,
+    incomesState,
+    monthExpensesState,
+    monthIncomeState,
+    yearExpensesState,
+    yearIncomeState,
+} from '../model';
 
 const { Meta } = Card;
 
 export const SavingStatistics: React.FC = () => {
-    const [income] = useGlobal('income');
-    const [expenses] = useGlobal('expenses');
-    const [totalMonthExpenses, setTotalMonthExpenses] = useGlobal('monthExpenses');
-    const [totalYearExpenses, setTotalYearExpenses] = useGlobal('yearExpenses');
-    const [totalMonthIncome, setTotalMonthIncome] = useGlobal('monthIncome');
-    const [totalYearIncome, setTotalYearIncome] = useGlobal('yearIncome');
+    const income = useRecoilValue(incomesState);
+    const expenses = useRecoilValue(expensesState);
+    const [totalMonthExpenses, setTotalMonthExpenses] = useRecoilState(monthExpensesState);
+    const [totalYearExpenses, setTotalYearExpenses] = useRecoilState(yearExpensesState);
+    const [totalMonthIncome, setTotalMonthIncome] = useRecoilState(monthIncomeState);
+    const [totalYearIncome, setTotalYearIncome] = useRecoilState(yearIncomeState);
 
     useEffect(() => {
         setTotalMonthIncome(
             income
-                .filter(inc =>
+                .filter((inc) =>
                     moment(inc.date).isBetween(moment().startOf('month'), moment().endOf('month'), undefined, '[]'),
                 )
                 .reduce((total, inc) => total + inc.amount, 0),
@@ -24,7 +33,7 @@ export const SavingStatistics: React.FC = () => {
 
         setTotalYearIncome(
             income
-                .filter(inc =>
+                .filter((inc) =>
                     moment(inc.date).isBetween(moment().startOf('year'), moment().endOf('year'), undefined, '[]'),
                 )
                 .reduce((total, inc) => total + inc.amount, 0),
@@ -32,7 +41,7 @@ export const SavingStatistics: React.FC = () => {
 
         setTotalMonthExpenses(
             expenses
-                .filter(exp =>
+                .filter((exp) =>
                     moment(exp.date).isBetween(moment().startOf('month'), moment().endOf('month'), undefined, '[]'),
                 )
                 .reduce((total, exp) => total + exp.amount, 0),
@@ -40,7 +49,7 @@ export const SavingStatistics: React.FC = () => {
 
         setTotalYearExpenses(
             expenses
-                .filter(exp =>
+                .filter((exp) =>
                     moment(exp.date).isBetween(moment().startOf('year'), moment().endOf('year'), undefined, '[]'),
                 )
                 .reduce((total, exp) => total + exp.amount, 0),
@@ -54,7 +63,7 @@ export const SavingStatistics: React.FC = () => {
     const percentage = Math.ceil((monthSavings * 100) / totalMonthIncome);
 
     return (
-        <Row gutter={16} type='flex'>
+        <Row gutter={16}>
             <Col span={8}>
                 <Card style={{ height: '100%' }}>
                     <Statistic
@@ -66,7 +75,7 @@ export const SavingStatistics: React.FC = () => {
                         valueStyle={{
                             color: monthSavings > 0 ? '#3f8600' : '#cf1322',
                         }}
-                        prefix={monthSavings > 0 ? <Icon type='arrow-up' /> : <Icon type='arrow-down' />}
+                        prefix={monthSavings > 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
                         suffix='€'
                     />
                 </Card>
@@ -82,7 +91,7 @@ export const SavingStatistics: React.FC = () => {
                         valueStyle={{
                             color: yearSavings > 0 ? '#3f8600' : '#cf1322',
                         }}
-                        prefix={yearSavings > 0 ? <Icon type='arrow-up' /> : <Icon type='arrow-down' />}
+                        prefix={yearSavings > 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
                         suffix='€'
                     />
                 </Card>

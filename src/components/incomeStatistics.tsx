@@ -1,25 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Statistic, Icon, Row, Col } from 'antd';
-import { useGlobal } from 'reactn';
+import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
+import { Card, Col, Row, Statistic } from 'antd';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
+import { incomesState, monthIncomeState, yearIncomeState } from '../model';
 
 export const IncomeStatistics: React.FC = () => {
-    const [income] = useGlobal('income');
-    const [totalMonthIncome] = useGlobal('monthIncome');
-    const [totalYearIncome] = useGlobal('yearIncome');
-    const [totalMonthIncomePreviousYear, setTotalMonthIncomePreviousYear] = useState();
+    const income = useRecoilValue(incomesState);
+    const totalMonthIncome = useRecoilValue(monthIncomeState);
+    const totalYearIncome = useRecoilValue(yearIncomeState);
+    const [totalMonthIncomePreviousYear, setTotalMonthIncomePreviousYear] = useState<number>(0);
 
     useEffect(() => {
         setTotalMonthIncomePreviousYear(
             income
-                .filter(inc =>
+                .filter((inc) =>
                     moment(inc.date).isBetween(
-                        moment()
-                            .subtract(1, 'year')
-                            .startOf('month'),
-                        moment()
-                            .subtract(1, 'year')
-                            .endOf('month'),
+                        moment().subtract(1, 'year').startOf('month'),
+                        moment().subtract(1, 'year').endOf('month'),
                         undefined,
                         '[]',
                     ),
@@ -44,9 +42,9 @@ export const IncomeStatistics: React.FC = () => {
                             }}
                             prefix={
                                 totalMonthIncome > totalMonthIncomePreviousYear ? (
-                                    <Icon type='arrow-up' />
+                                    <ArrowUpOutlined />
                                 ) : (
-                                    <Icon type='arrow-down' />
+                                    <ArrowDownOutlined />
                                 )
                             }
                             suffix='€'
@@ -54,9 +52,7 @@ export const IncomeStatistics: React.FC = () => {
                     </Col>
                     <Col span={12}>
                         <Statistic
-                            title={`Total Income ${moment()
-                                .subtract(1, 'year')
-                                .format('MMMM YYYY')}`}
+                            title={`Total Income ${moment().subtract(1, 'year').format('MMMM YYYY')}`}
                             value={totalMonthIncomePreviousYear}
                             decimalSeparator=','
                             groupSeparator='.'

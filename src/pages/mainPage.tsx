@@ -1,17 +1,22 @@
+import { DashboardOutlined, LogoutOutlined, PlusOutlined, TagsOutlined } from '@ant-design/icons';
+import { Button, message, PageHeader, Spin, Tabs } from 'antd';
+import axios, { AxiosResponse } from 'axios';
 import React, { useState } from 'react';
-import { setGlobal, useGlobal } from 'reactn';
-import { PageHeader, Tabs, Button, Icon, message, Spin } from 'antd';
-import income from '../images/income.png';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { CategoriesTab, DashboardTab, ExpensesTab, IncomeTab } from '.';
+import { CategoryHandle, FormModal, SavingStatistics } from '../components';
 import expense from '../images/expense.png';
-import axios from 'axios';
-import { IncomeTab, ExpensesTab, CategoriesTab, DashboardTab } from '.';
-import { SavingStatistics, FormModal, CategoryHandle } from '../components';
-import { tabType } from '../model';
+import income from '../images/income.png';
+import { categoriesState, expensesState, incomesState, loginState } from '../model';
+import { tabType } from '../model/data';
 
 const TabPane = Tabs.TabPane;
 
 export const MainPage: React.FC = () => {
-    const [isLoggedIn] = useGlobal('isLoggedIn');
+    const [isLoggedIn, setLoggedIn] = useRecoilState(loginState);
+    const setIncomes = useSetRecoilState(incomesState);
+    const setExpenses = useSetRecoilState(expensesState);
+    const setCategories = useSetRecoilState(categoriesState);
     const [selectedTab, setSelectedTab] = useState<tabType>('Dashboard');
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setLoading] = useState(true);
@@ -22,35 +27,35 @@ export const MainPage: React.FC = () => {
     React.useEffect(() => {
         axios
             .get('income')
-            .then(response => {
-                setGlobal({ income: response.data.data });
+            .then((response: AxiosResponse) => {
+                setIncomes(response.data);
                 setIncomeFetched(true);
             })
             .catch(() => {
                 message.error('Could not fetch income data. Please login again.');
-                setGlobal({ isLoggedIn: false });
+                setLoggedIn(false);
             });
 
         axios
             .get('expense')
-            .then(response => {
-                setGlobal({ expenses: response.data.data });
+            .then((response: AxiosResponse) => {
+                setExpenses(response.data);
                 setExpensesFetched(true);
             })
             .catch(() => {
                 message.error('Could not fetch expense data. Please login again.');
-                setGlobal({ isLoggedIn: false });
+                setLoggedIn(false);
             });
 
         axios
             .get('category')
-            .then(response => {
-                setGlobal({ categories: response.data.data });
+            .then((response: AxiosResponse) => {
+                setCategories(response.data);
                 setCategoriesFetched(true);
             })
             .catch(() => {
                 message.error('Could not fetch categories data. Please login again.');
-                setGlobal({ isLoggedIn: false });
+                setLoggedIn(false);
             });
     }, [isLoggedIn]);
 
@@ -60,7 +65,7 @@ export const MainPage: React.FC = () => {
         }
     }, [isCategoriesFetched, isExpensesFetched, isIncomeFetched]);
 
-    const onChange = activeKey => {
+    const onChange = (activeKey) => {
         setSelectedTab(activeKey);
     };
 
@@ -70,14 +75,14 @@ export const MainPage: React.FC = () => {
 
     const logout = () => {
         localStorage.removeItem('token');
-        setGlobal({ isLoggedIn: false });
+        setLoggedIn(false);
     };
 
     const operations =
         selectedTab === 'Category' ? (
             <CategoryHandle />
         ) : (
-            <Button onClick={AddNew} icon='plus' type='primary'>
+            <Button onClick={AddNew} icon={<PlusOutlined />} type='primary'>
                 {selectedTab}
             </Button>
         );
@@ -92,7 +97,7 @@ export const MainPage: React.FC = () => {
                 <>
                     <FormModal
                         visible={showModal}
-                        onVisibleChange={visible => setShowModal(visible)}
+                        onVisibleChange={(visible) => setShowModal(visible)}
                         type={selectedTab}
                     />
                     <PageHeader
@@ -100,7 +105,7 @@ export const MainPage: React.FC = () => {
                         title='Dashboard'
                         subTitle='An Overview of your Savings'
                         extra={[
-                            <Button key='1' type='danger' icon='logout' onClick={logout}>
+                            <Button key='1' danger type='primary' icon={<LogoutOutlined />} onClick={logout}>
                                 Logout
                             </Button>,
                         ]}
@@ -114,7 +119,7 @@ export const MainPage: React.FC = () => {
                                 <TabPane
                                     tab={
                                         <span>
-                                            <Icon type='dashboard' />
+                                            <DashboardOutlined />
                                             Charts
                                         </span>
                                     }
@@ -159,7 +164,7 @@ export const MainPage: React.FC = () => {
                                 <TabPane
                                     tab={
                                         <span>
-                                            <Icon type='tags' />
+                                            <TagsOutlined />
                                             Categories
                                         </span>
                                     }

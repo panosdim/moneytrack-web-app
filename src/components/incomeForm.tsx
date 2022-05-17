@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
-import { incomeType } from '../model';
-import Form, { FormComponentProps } from 'antd/lib/form';
-import { DatePicker, Icon, Input } from 'antd';
+import { Form } from '@ant-design/compatible';
+import { FormComponentProps } from '@ant-design/compatible/lib/form';
+import Icon from '@ant-design/icons';
+import { DatePicker, Input } from 'antd';
 import moment from 'moment';
+import React, { useEffect } from 'react';
 import { ReactComponent as EuroIconSvg } from '../images/euro.svg';
+import { incomeType } from '../model/data';
 
 interface Props extends FormComponentProps {
     income?: incomeType;
@@ -27,7 +29,7 @@ const NormalIncomeForm: React.FC<Props> = (props: Props) => {
 
     return (
         <Form>
-            <Form.Item label='Date'>
+            <Form.Item>
                 {getFieldDecorator('date', {
                     initialValue: moment(),
                     rules: [
@@ -36,9 +38,9 @@ const NormalIncomeForm: React.FC<Props> = (props: Props) => {
                             message: 'Please enter a valid date!',
                         },
                     ],
-                })(<MonthPicker style={{ width: '100%' }} format='MMMM YYYY'/>)}
+                })(<MonthPicker style={{ width: '100%' }} format='MMMM YYYY' />)}
             </Form.Item>
-            <Form.Item label='Amount'>
+            <Form.Item>
                 {getFieldDecorator('amount', {
                     rules: [
                         {
@@ -50,16 +52,16 @@ const NormalIncomeForm: React.FC<Props> = (props: Props) => {
                 })(
                     <Input
                         // @ts-ignore
-                        suffix={<Icon component={EuroIconSvg} style={{ color: 'rgba(0,0,0,.45)' }}/>}
+                        suffix={<Icon component={EuroIconSvg} style={{ color: 'rgba(0,0,0,.45)' }} />}
                         style={{ width: '100%' }}
                         type='number'
                         placeholder='Enter Amount'
                     />,
                 )}
             </Form.Item>
-            <Form.Item label='Comment'>
+            <Form.Item>
                 {getFieldDecorator('comment')(
-                    <Input style={{ width: '100%' }} type='text' placeholder='Enter Comment'/>,
+                    <Input style={{ width: '100%' }} type='text' placeholder='Enter Comment' />,
                 )}
             </Form.Item>
         </Form>

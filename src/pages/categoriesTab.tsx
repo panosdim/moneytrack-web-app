@@ -1,25 +1,28 @@
-import React from 'react';
-import { Card, Icon, Button, Popconfirm, message } from 'antd';
-import { useGlobal, setGlobal } from 'reactn';
+import { DeleteOutlined } from '@ant-design/icons';
+import { Button, Card, message, Popconfirm } from 'antd';
 import axios from 'axios';
+import React from 'react';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { CategoryHandle } from '../components';
+import { categoriesState, loginState } from '../model';
 
 const { Meta } = Card;
 
 export const CategoriesTab: React.FC = () => {
-    const [categories, setCategories] = useGlobal('categories');
+    const [categories, setCategories] = useRecoilState(categoriesState);
+    const setLoggedIn = useSetRecoilState(loginState);
 
     const deleteCategory = (id: number) => {
         axios
             .delete(`category/${id}`)
             .then(() => {
-                setCategories(categories.filter(cat => cat.id !== id));
+                setCategories(categories.filter((cat) => cat.id !== id));
                 message.success('Category deleted successfully!');
             })
-            .catch(error => {
+            .catch((error) => {
                 if (error.response && error.response.status === 400) {
                     // JWT Token expired
-                    setGlobal({ isLoggedIn: false });
+                    setLoggedIn(false);
                     message.error(error.response.data.error);
                 } else if (error.response && error.response.status === 409) {
                     message.error(error.response.data.error);
@@ -31,7 +34,7 @@ export const CategoriesTab: React.FC = () => {
 
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between', flexFlow: 'row wrap' }}>
-            {categories.map(category => (
+            {categories.map((category) => (
                 <Card
                     key={category.id}
                     hoverable
@@ -44,8 +47,8 @@ export const CategoriesTab: React.FC = () => {
                             okText='Yes'
                             cancelText='No'
                         >
-                            <Button type='danger'>
-                                <Icon type='delete' />
+                            <Button type='primary' danger>
+                                <DeleteOutlined />
                             </Button>
                         </Popconfirm>,
                         <CategoryHandle category={category} />,

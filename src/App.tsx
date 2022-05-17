@@ -1,36 +1,26 @@
-import React, { useState } from 'react';
-import { useGlobal, setGlobal } from 'reactn';
-import './App.css';
-import axios from 'axios';
 import { Spin } from 'antd';
+import axios from 'axios';
+import React, { useState } from 'react';
+import { useRecoilState } from 'recoil';
+import './App.css';
+import { loginState } from './model';
 import { LoginPage, MainPage } from './pages';
 
-axios.defaults.baseURL = 'https://api.moneytrack.cc.nf/';
+axios.defaults.baseURL = 'https://moneytrack.dsw.mywire.org/api';
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
 
-setGlobal({
-    isLoggedIn: false,
-    income: [],
-    expenses: [],
-    categories: [],
-    monthIncome: 0,
-    yearIncome: 0,
-    monthExpenses: 0,
-    yearExpenses: 0,
-});
-
 const App: React.FC = () => {
-    const [isLoggedIn, setLoggedIn] = useGlobal('isLoggedIn');
+    const [isLoggedIn, setLoggedIn] = useRecoilState(loginState);
     const [isLoading, setLoading] = useState(true);
 
     React.useEffect(() => {
         axios
             .get('user')
-            .then(response => {
+            .then((response) => {
                 setLoggedIn(true);
                 setLoading(false);
             })
-            .catch(error => {
+            .catch((error) => {
                 setLoggedIn(false);
                 setLoading(false);
             });

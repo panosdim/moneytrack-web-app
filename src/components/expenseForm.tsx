@@ -1,10 +1,14 @@
-import React, { useEffect } from 'react';
-import { expenseType } from '../model';
-import { DatePicker, Form, Icon, Input, Select } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { FormComponentProps } from '@ant-design/compatible/lib/form';
+import Icon from '@ant-design/icons';
+import { DatePicker, Input, Select } from 'antd';
 import moment from 'moment';
+import React, { useEffect } from 'react';
+import { useRecoilValue } from 'recoil';
 import { ReactComponent as EuroIconSvg } from '../images/euro.svg';
-import { useGlobal } from 'reactn';
-import { FormComponentProps } from 'antd/lib/form';
+import { categoriesState } from '../model';
+import { expenseType } from '../model/data';
 
 interface Props extends FormComponentProps {
     expense?: expenseType;
@@ -23,7 +27,7 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
     // @ts-ignore
     const { form, expense } = props;
     const { getFieldDecorator, setFieldsValue } = form;
-    const [categories] = useGlobal('categories');
+    const categories = useRecoilValue(categoriesState);
 
     useEffect(() => {
         if (expense) {
@@ -39,7 +43,7 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
 
     return (
         <Form>
-            <Form.Item label='Date'>
+            <Form.Item>
                 {getFieldDecorator('date', {
                     initialValue: moment(),
                     rules: [
@@ -48,10 +52,9 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
                             message: 'Please enter a valid date!',
                         },
                     ],
-                })(<DatePicker locale={{ firstWeekDay: 1 }} style={{ width: '100%' }}
-                               format='ddd D MMMM YYYY'/>)}
+                })(<DatePicker style={{ width: '100%' }} format='ddd D MMMM YYYY' />)}
             </Form.Item>
-            <Form.Item label='Amount'>
+            <Form.Item>
                 {getFieldDecorator('amount', {
                     rules: [
                         {
@@ -64,14 +67,14 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
                     // @ts-ignore
                     <Input
                         // @ts-ignore
-                        suffix={<Icon component={EuroIconSvg} style={{ color: 'rgba(0,0,0,.45)' }}/>}
+                        suffix={<Icon component={EuroIconSvg} style={{ color: 'rgba(0,0,0,.45)' }} />}
                         style={{ width: '100%' }}
                         type='number'
                         placeholder='Enter Amount'
                     />,
                 )}
             </Form.Item>
-            <Form.Item label='Category'>
+            <Form.Item>
                 {getFieldDecorator('category', {
                     rules: [
                         {
@@ -93,7 +96,7 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
                         {categories
                             .sort((a, b) => a.count - b.count)
                             .reverse()
-                            .map(category => (
+                            .map((category) => (
                                 <Option key={category.id} value={category.id}>
                                     {category.category}
                                 </Option>
@@ -101,10 +104,10 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
                     </Select>,
                 )}
             </Form.Item>
-            <Form.Item label='Comment'>
+            <Form.Item>
                 {getFieldDecorator('comment')(
                     // @ts-ignore
-                    <Input style={{ width: '100%' }} type='text' placeholder='Enter Comment'/>,
+                    <Input style={{ width: '100%' }} type='text' placeholder='Enter Comment' />,
                 )}
             </Form.Item>
         </Form>

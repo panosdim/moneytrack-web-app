@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Modal, message, Button, Popconfirm } from 'antd';
-import { incomeType, tabType, expenseType } from '../model';
+import { Button, message, Modal, Popconfirm } from 'antd';
 import axios from 'axios';
-import { useGlobal, setGlobal } from 'reactn';
 import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { ExpenseForm, IncomeForm } from '.';
+import { expensesState, incomesState, loginState } from '../model';
+import { expenseType, incomeType, tabType } from '../model/data';
 
 interface Props {
     visible: boolean;
@@ -20,8 +21,9 @@ export const FormModal: React.FC<Props> = (props: Props) => {
     const [isLoading, setLoading] = useState(false);
     const incomeForm = useRef(null);
     const expenseForm = useRef(null);
-    const [income, setIncome] = useGlobal('income');
-    const [expenses, setExpenses] = useGlobal('expenses');
+    const [income, setIncome] = useRecoilState(incomesState);
+    const [expenses, setExpenses] = useRecoilState(expensesState);
+    const setLoggedIn = useSetRecoilState(loginState);
 
     useEffect(() => {
         setVisible(visible);
@@ -103,9 +105,9 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                     url: url,
                     data: storeValues,
                 })
-                    .then(response => {
+                    .then((response) => {
                         selectedIncome
-                            ? setIncome(income.map(inc => (inc.id === selectedIncome.id ? response.data.data : inc)))
+                            ? setIncome(income.map((inc) => (inc.id === selectedIncome.id ? response.data.data : inc)))
                             : setIncome([...income, response.data.data]);
                         setLoading(false);
                         setVisible(false);
@@ -113,11 +115,11 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                         form.resetFields();
                         message.success('Income saved successfully!');
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         if (error.response && error.response.status === 400) {
                             // JWT Token expired
                             setLoading(false);
-                            setGlobal({ isLoggedIn: false });
+                            setLoggedIn(false);
                             message.error(error.response.data.error);
                         } else {
                             setLoading(false);
@@ -144,10 +146,10 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                     url: url,
                     data: storeValues,
                 })
-                    .then(response => {
+                    .then((response) => {
                         selectedExpense
                             ? setExpenses(
-                                  expenses.map(exp => (exp.id === selectedExpense.id ? response.data.data : exp)),
+                                  expenses.map((exp) => (exp.id === selectedExpense.id ? response.data.data : exp)),
                               )
                             : setExpenses([...expenses, response.data.data]);
                         setLoading(false);
@@ -156,11 +158,11 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                         form.resetFields();
                         message.success('Expense saved successfully!');
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         if (error.response && error.response.status === 400) {
                             // JWT Token expired
                             setLoading(false);
-                            setGlobal({ isLoggedIn: false });
+                            setLoggedIn(false);
                             message.error(error.response.data.error);
                         } else {
                             setLoading(false);
@@ -176,8 +178,8 @@ export const FormModal: React.FC<Props> = (props: Props) => {
             setLoading(true);
             axios
                 .delete(`income/${selectedIncome.id}`)
-                .then(response => {
-                    setIncome(income.filter(inc => inc.id !== selectedIncome.id));
+                .then((response) => {
+                    setIncome(income.filter((inc) => inc.id !== selectedIncome.id));
                     const form = (incomeForm as any).current;
 
                     setLoading(false);
@@ -186,11 +188,11 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                     form.resetFields();
                     message.success('Income deleted successfully!');
                 })
-                .catch(error => {
+                .catch((error) => {
                     if (error.response && error.response.status === 400) {
                         // JWT Token expired
                         setLoading(false);
-                        setGlobal({ isLoggedIn: false });
+                        setLoggedIn(false);
                         message.error(error.response.data.error);
                     } else {
                         setLoading(false);
@@ -205,8 +207,8 @@ export const FormModal: React.FC<Props> = (props: Props) => {
             setLoading(true);
             axios
                 .delete(`expense/${selectedExpense.id}`)
-                .then(response => {
-                    setExpenses(expenses.filter(exp => exp.id !== selectedExpense.id));
+                .then((response) => {
+                    setExpenses(expenses.filter((exp) => exp.id !== selectedExpense.id));
                     const form = (expenseForm as any).current;
 
                     setLoading(false);
@@ -215,11 +217,11 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                     form.resetFields();
                     message.success('Expense deleted successfully!');
                 })
-                .catch(error => {
+                .catch((error) => {
                     if (error.response && error.response.status === 400) {
                         // JWT Token expired
                         setLoading(false);
-                        setGlobal({ isLoggedIn: false });
+                        setLoggedIn(false);
                         message.error(error.response.data.error);
                     } else {
                         setLoading(false);
@@ -242,7 +244,7 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                   okText='Yes'
                   cancelText='No'
               >
-                  <Button key='back' type='danger' loading={isLoading}>
+                  <Button key='back' type='primary' danger loading={isLoading}>
                       Delete
                   </Button>
               </Popconfirm>,

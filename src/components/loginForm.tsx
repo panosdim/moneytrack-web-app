@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
-import { Form, Icon, Input, Button, message } from 'antd';
-import { FormComponentProps } from 'antd/lib/form';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { FormComponentProps } from '@ant-design/compatible/lib/form';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Input, message } from 'antd';
 import axios from 'axios';
-import { setGlobal } from 'reactn';
+import React, { useState } from 'react';
+import { useSetRecoilState } from 'recoil';
+import { loginState } from '../model';
 
 interface Props extends FormComponentProps {}
 
@@ -10,6 +14,7 @@ const NormalLoginForm = (props: Props) => {
     const { form } = props;
     const { getFieldDecorator } = form;
     const [isLoading, setLoading] = useState(false);
+    const setLoggedIn = useSetRecoilState(loginState);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -19,13 +24,13 @@ const NormalLoginForm = (props: Props) => {
             if (!err) {
                 axios
                     .post('login', values)
-                    .then(response => {
+                    .then((response) => {
                         localStorage.setItem('token', response.data.token);
                         axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
                         setLoading(false);
-                        setGlobal({ isLoggedIn: true });
+                        setLoggedIn(true);
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         message.error('Login error. Please check your email or password.');
                         setLoading(false);
                     });
@@ -40,7 +45,7 @@ const NormalLoginForm = (props: Props) => {
                     rules: [{ required: true, type: 'email', message: 'Please input your email!' }],
                 })(
                     <Input
-                        prefix={<Icon type='user' style={{ color: 'rgba(0,0,0,.25)' }} />}
+                        prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
                         type='email'
                         placeholder='Email'
                     />,
@@ -51,7 +56,7 @@ const NormalLoginForm = (props: Props) => {
                     rules: [{ required: true, message: 'Please input your Password!' }],
                 })(
                     <Input.Password
-                        prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />}
+                        prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
                         type='password'
                         placeholder='Password'
                     />,

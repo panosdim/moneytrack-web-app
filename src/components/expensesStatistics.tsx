@@ -1,27 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Statistic, Icon, Row, Col } from 'antd';
-import { useGlobal } from 'reactn';
+import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
+import { Card, Col, Row, Statistic } from 'antd';
 import moment from 'moment';
-import { expenseType } from '../model';
+import React, { useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
+import { categoriesState, expensesState, monthExpensesState } from '../model';
+import { expenseType } from '../model/data';
 
 export const ExpensesStatistics: React.FC = () => {
-    const [expenses] = useGlobal('expenses');
-    const [categories] = useGlobal('categories');
-    const [totalMonthExpenses] = useGlobal('monthExpenses');
-    const [totalMonthExpensesPreviousYear, setTotalMonthExpensesPreviousYear] = useState();
-    const [biggestMonthExpenses, setBiggestMonthExpenses] = useState();
+    const expenses = useRecoilValue(expensesState);
+    const categories = useRecoilValue(categoriesState);
+    const totalMonthExpenses = useRecoilValue(monthExpensesState);
+    const [totalMonthExpensesPreviousYear, setTotalMonthExpensesPreviousYear] = useState<number>(0);
+    const [biggestMonthExpenses, setBiggestMonthExpenses] = useState<expenseType[]>([]);
 
     useEffect(() => {
         setTotalMonthExpensesPreviousYear(
             expenses
-                .filter(exp =>
+                .filter((exp) =>
                     moment(exp.date).isBetween(
-                        moment()
-                            .subtract(1, 'year')
-                            .startOf('month'),
-                        moment()
-                            .subtract(1, 'year')
-                            .endOf('month'),
+                        moment().subtract(1, 'year').startOf('month'),
+                        moment().subtract(1, 'year').endOf('month'),
                         undefined,
                         '[]',
                     ),
@@ -31,7 +29,7 @@ export const ExpensesStatistics: React.FC = () => {
 
         setBiggestMonthExpenses(
             expenses
-                .filter(exp =>
+                .filter((exp) =>
                     moment(exp.date).isBetween(moment().startOf('month'), moment().endOf('month'), undefined, '[]'),
                 )
                 .sort((a, b) => b.amount - a.amount)
@@ -40,7 +38,7 @@ export const ExpensesStatistics: React.FC = () => {
     }, [expenses]);
 
     const categoryName = (categoryID: number): string => {
-        const found = categories.find(cat => cat.id === Number(categoryID));
+        const found = categories.find((cat) => cat.id === Number(categoryID));
         return found ? found.category : '';
     };
 
@@ -60,9 +58,9 @@ export const ExpensesStatistics: React.FC = () => {
                             }}
                             prefix={
                                 totalMonthExpenses > totalMonthExpensesPreviousYear ? (
-                                    <Icon type='arrow-up' />
+                                    <ArrowUpOutlined />
                                 ) : (
-                                    <Icon type='arrow-down' />
+                                    <ArrowDownOutlined />
                                 )
                             }
                             suffix='€'
@@ -70,9 +68,7 @@ export const ExpensesStatistics: React.FC = () => {
                     </Col>
                     <Col span={12}>
                         <Statistic
-                            title={`Total Expenses ${moment()
-                                .subtract(1, 'year')
-                                .format('MMMM YYYY')}`}
+                            title={`Total Expenses ${moment().subtract(1, 'year').format('MMMM YYYY')}`}
                             value={totalMonthExpensesPreviousYear}
                             decimalSeparator=','
                             groupSeparator='.'

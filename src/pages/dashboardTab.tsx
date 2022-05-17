@@ -1,17 +1,8 @@
+import { Col, List, Modal, Row, Select, Typography } from 'antd';
+import moment from 'moment';
 import React, { useState } from 'react';
-import {
-    Bar,
-    BarChart,
-    Line,
-    LineChart,
-    ReferenceLine,
-    ResponsiveContainer,
-    Tooltip,
-    TooltipFormatter,
-    XAxis,
-    YAxis
-} from 'recharts';
-import { useGlobal } from 'reactn';
+import { Bar, BarChart, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { useRecoilValue } from 'recoil';
 import {
     getLastYears,
     getMonth,
@@ -20,11 +11,10 @@ import {
     getYear,
     moneyFmt,
     MONTHS,
-    shortMonthNames
+    shortMonthNames,
 } from '../components';
-import { Col, List, Modal, Row, Select, Typography } from 'antd';
-import { categoryType, expenseType } from '../model';
-import moment from 'moment';
+import { categoriesState, expensesState, incomesState } from '../model';
+import { categoryType, expenseType } from '../model/data';
 
 const { Option } = Select;
 const { Title, Text } = Typography;
@@ -34,19 +24,19 @@ type monthlyChartType = {
 };
 
 type categoriesChartType = {
-    name: categoryType['category'],
-    value: number
-}
+    name: categoryType['category'];
+    value: number;
+};
 
 export const DashboardTab: React.FC = () => {
-    const [income] = useGlobal('income');
-    const [expenses] = useGlobal('expenses');
-    const [categories] = useGlobal('categories');
+    const income = useRecoilValue(incomesState);
+    const expenses = useRecoilValue(expensesState);
+    const categories = useRecoilValue(categoriesState);
     const [year, setYear] = useState(getLastYears(4).slice(-1)[0]);
     const [month, setMonth] = useState(MONTHS[new Date().getMonth()]);
 
     const categoryName = (categoryID: number): string => {
-        const found = categories.find(cat => cat.id === Number(categoryID));
+        const found = categories.find((cat) => cat.id === Number(categoryID));
         return found ? found.category : '';
     };
 
@@ -84,11 +74,12 @@ export const DashboardTab: React.FC = () => {
     });
 
     const monthlyExpensesPerCategories = organizePerCategories(expenses);
-    const monthlyExpensesPerCategoriesData: categoriesChartType[] = Object.keys(monthlyExpensesPerCategories)
-        .map(key => ({
+    const monthlyExpensesPerCategoriesData: categoriesChartType[] = Object.keys(monthlyExpensesPerCategories).map(
+        (key) => ({
             name: key,
             value: monthlyExpensesPerCategories[key],
-        }));
+        }),
+    );
 
     const YEARS = getLastYears(4);
     const handleYearChange = (value) => {
@@ -102,62 +93,81 @@ export const DashboardTab: React.FC = () => {
     const handleClick = (data, index) => {
         console.log(data);
         console.log(index);
-        const cat = categories.find(cat => cat.category === data.name);
+        const cat = categories.find((cat) => cat.category === data.name);
         if (!cat) {
             return;
         }
         const catId = cat.id;
-        const expensesForCat = expenses.filter(exp => {
-            const itmMonth = getMonthName(getMonth(exp.date));
-            const itmYear = getYear(exp.date);
-            return itmMonth === month && itmYear === year && catId === Number(exp.category);
-        }).sort((a: expenseType, b: expenseType) => b.amount - a.amount);
+        const expensesForCat = expenses
+            .filter((exp) => {
+                const itmMonth = getMonthName(getMonth(exp.date));
+                const itmYear = getYear(exp.date);
+                return itmMonth === month && itmYear === year && catId === Number(exp.category);
+            })
+            .sort((a: expenseType, b: expenseType) => b.amount - a.amount);
         Modal.info({
             title: `Expenses for ${data.name}`,
             content: (
                 <div>
                     <List
-                        size="small"
-                        itemLayout="horizontal"
+                        size='small'
+                        itemLayout='horizontal'
                         dataSource={expensesForCat}
                         footer={
                             <div>
                                 <Title level={4}>
-                                    Total: <Text type="danger"
-                                                 strong>{moneyFmt.format(expensesForCat.reduce((total, exp) => total + exp.amount, 0))}</Text>
+                                    Total:{' '}
+                                    <Text type='danger' strong>
+                                        {moneyFmt.format(expensesForCat.reduce((total, exp) => total + exp.amount, 0))}
+                                    </Text>
                                 </Title>
                             </div>
                         }
-                        renderItem={item => (
+                        renderItem={(item) => (
                             <List.Item>
                                 <Text mark>{moment(item.date).format('DD MMMM YYYY')}</Text>
                                 &nbsp;&nbsp;&nbsp;
-                                <Text type="danger" strong>{moneyFmt.format(item.amount)}</Text>
+                                <Text type='danger' strong>
+                                    {moneyFmt.format(item.amount)}
+                                </Text>
                                 &nbsp;&nbsp;&nbsp;
-                                <Text type="secondary">{item.comment}</Text>
+                                <Text type='secondary'>{item.comment}</Text>
                             </List.Item>
                         )}
                     />
                 </div>
             ),
-            onOk() {
-            },
+            onOk() {},
         });
     };
 
     return (
         <>
             <Row style={{ padding: '16px' }}>
-                <Col xs={2}><Select defaultValue={year} style={{ width: 120 }} onChange={handleYearChange}>
-                    {YEARS.map(year => <Option key={year} value={year}>{year}</Option>)}
-                </Select></Col>
-                <Col xs={4}><Select defaultValue={month} style={{ width: 120 }} onChange={handleMonthChange}>
-                    {MONTHS.map(month => <Option key={month} value={month}>{month}</Option>)}
-                </Select></Col>
+                <Col xs={2}>
+                    <Select defaultValue={year} style={{ width: 120 }} onChange={handleYearChange}>
+                        {YEARS.map((year) => (
+                            <Option key={year} value={year}>
+                                {year}
+                            </Option>
+                        ))}
+                    </Select>
+                </Col>
+                <Col xs={4}>
+                    <Select defaultValue={month} style={{ width: 120 }} onChange={handleMonthChange}>
+                        {MONTHS.map((month) => (
+                            <Option key={month} value={month}>
+                                {month}
+                            </Option>
+                        ))}
+                    </Select>
+                </Col>
             </Row>
             <Row>
                 <Col span={16}>
-                    <Title level={3} style={{ textAlign: 'center' }}>Expenses per categories</Title>
+                    <Title level={3} style={{ textAlign: 'center' }}>
+                        Expenses per categories
+                    </Title>
                     <div style={{ width: '100%', height: 500 }}>
                         <ResponsiveContainer>
                             <BarChart
@@ -169,16 +179,18 @@ export const DashboardTab: React.FC = () => {
                                     bottom: 5,
                                 }}
                             >
-                                <XAxis dataKey='name' interval={0}/>
-                                <YAxis unit={'\u20AC'}/>
-                                <Tooltip formatter={((value: number) => moneyFmt.format(value)) as TooltipFormatter}/>
-                                <Bar dataKey="value" fill='#428bca' onClick={handleClick}/>
+                                <XAxis dataKey='name' interval={0} />
+                                <YAxis unit={'\u20AC'} />
+                                <Tooltip formatter={(value: number) => moneyFmt.format(value)} />
+                                <Bar dataKey='value' fill='#428bca' onClick={handleClick} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
                 </Col>
                 <Col span={8}>
-                    <Title level={3} style={{ textAlign: 'center' }}>Savings per month</Title>
+                    <Title level={3} style={{ textAlign: 'center' }}>
+                        Savings per month
+                    </Title>
                     <div style={{ width: '100%', height: 500 }}>
                         <ResponsiveContainer>
                             <LineChart
@@ -190,12 +202,11 @@ export const DashboardTab: React.FC = () => {
                                     bottom: 5,
                                 }}
                             >
-                                <XAxis dataKey='name' padding={{ left: 10, right: 10 }}/>
-                                <YAxis unit={'\u20AC'}/>
-                                <ReferenceLine y={0} stroke="red"/>
-                                <Tooltip
-                                    formatter={((value: number) => moneyFmt.format(value)) as TooltipFormatter}/>
-                                <Line type="monotone" dataKey='value' stroke="#8884d8" strokeWidth={2}/>
+                                <XAxis dataKey='name' padding={{ left: 10, right: 10 }} />
+                                <YAxis unit={'\u20AC'} />
+                                <ReferenceLine y={0} stroke='red' />
+                                <Tooltip formatter={(value: number) => moneyFmt.format(value)} />
+                                <Line type='monotone' dataKey='value' stroke='#8884d8' strokeWidth={2} />
                             </LineChart>
                         </ResponsiveContainer>
                     </div>
