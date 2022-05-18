@@ -164,53 +164,51 @@ export const DashboardTab: React.FC = () => {
                 </Col>
             </Row>
             <Row>
-                <Col span={16}>
-                    <Title level={3} style={{ textAlign: 'center' }}>
-                        Expenses per categories
-                    </Title>
-                    <div style={{ width: '100%', height: 500 }}>
-                        <ResponsiveContainer>
-                            <BarChart
-                                data={monthlyExpensesPerCategoriesData}
-                                margin={{
-                                    top: 20,
-                                    right: 30,
-                                    left: 20,
-                                    bottom: 5,
-                                }}
-                            >
-                                <XAxis dataKey='name' interval={0} />
-                                <YAxis unit={'\u20AC'} />
-                                <Tooltip formatter={(value: number) => moneyFmt.format(value)} />
-                                <Bar dataKey='value' fill='#428bca' onClick={handleClick} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-                </Col>
-                <Col span={8}>
-                    <Title level={3} style={{ textAlign: 'center' }}>
-                        Savings per month
-                    </Title>
-                    <div style={{ width: '100%', height: 500 }}>
-                        <ResponsiveContainer>
-                            <LineChart
-                                data={savingsPerMonthData}
-                                margin={{
-                                    top: 20,
-                                    right: 30,
-                                    left: 20,
-                                    bottom: 5,
-                                }}
-                            >
-                                <XAxis dataKey='name' padding={{ left: 10, right: 10 }} />
-                                <YAxis unit={'\u20AC'} />
-                                <ReferenceLine y={0} stroke='red' />
-                                <Tooltip formatter={(value: number) => moneyFmt.format(value)} />
-                                <Line type='monotone' dataKey='value' stroke='#8884d8' strokeWidth={2} />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </div>
-                </Col>
+                <Title level={3} style={{ textAlign: 'center' }}>
+                    Expenses per categories
+                </Title>
+                <div style={{ width: '100%', height: 500 }}>
+                    <ResponsiveContainer>
+                        <BarChart
+                            data={monthlyExpensesPerCategoriesData}
+                            margin={{
+                                top: 20,
+                                right: 30,
+                                left: 20,
+                                bottom: 5,
+                            }}
+                        >
+                            <XAxis dataKey='name' interval={0} />
+                            <YAxis unit={'\u20AC'} />
+                            <Tooltip formatter={(value: number) => moneyFmt.format(value)} />
+                            <Bar dataKey='value' fill='#428bca' onClick={handleClick} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+            </Row>
+            <Row>
+                <Title level={3} style={{ textAlign: 'center' }}>
+                    Savings per month
+                </Title>
+                <div style={{ width: '100%', height: 500 }}>
+                    <ResponsiveContainer>
+                        <LineChart
+                            data={savingsPerMonthData}
+                            margin={{
+                                top: 20,
+                                right: 30,
+                                left: 20,
+                                bottom: 5,
+                            }}
+                        >
+                            <XAxis dataKey='name' padding={{ left: 10, right: 10 }} />
+                            <YAxis unit={'\u20AC'} />
+                            <ReferenceLine y={0} stroke='red' />
+                            <Tooltip formatter={(value: number) => moneyFmt.format(value)} />
+                            <Line type='monotone' dataKey='value' stroke='#8884d8' strokeWidth={2} />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </div>
             </Row>
         </>
     );

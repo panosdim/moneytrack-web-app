@@ -38,7 +38,7 @@ export const CategoriesTab: React.FC = () => {
                 <Card
                     key={category.id}
                     hoverable
-                    style={{ width: '150px', margin: '10px' }}
+                    style={{ width: '300px', margin: '10px' }}
                     actions={[
                         <Popconfirm
                             key={category.id}
@@ -54,7 +54,7 @@ export const CategoriesTab: React.FC = () => {
                         <CategoryHandle category={category} />,
                     ]}
                 >
-                    <Meta title={category.category} />
+                    <Meta title={category.category} style={{ textAlign: 'center' }} />
                 </Card>
             ))}
         </div>
