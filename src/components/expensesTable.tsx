@@ -63,7 +63,8 @@ export const ExpensesTable: React.FC = () => {
                 text: category.category,
                 value: String(category.id),
             })),
-            onFilter: (value: number | string | boolean, record: expenseType) => value === record.category,
+            onFilter: (value: number | string | boolean, record: expenseType) =>
+                String(value) === String(record.category),
             render: (category: number) => categoryName(category),
             key: 'category',
         },

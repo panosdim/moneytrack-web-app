@@ -7,6 +7,7 @@ import { expenseType, incomeType } from '../model/data';
 
 export const DateProps = () => {
     const { RangePicker } = DatePicker;
+    let start: string, end: string;
 
     const handleSearch = (confirm) => {
         confirm();
@@ -17,11 +18,11 @@ export const DateProps = () => {
         setSelectedKeys([]);
     };
 
-    const getRangeDates = (value: [string, string]): [moment.Moment, moment.Moment] => {
+    const getRangeDates = (value: [string, string]): [moment.Moment | null, moment.Moment | null] => {
         if (value && value.length === 2) {
             return [moment(value[0]), moment(value[1])];
         } else {
-            return [moment(), moment()];
+            return [null, null];
         }
     };
 
@@ -41,9 +42,9 @@ export const DateProps = () => {
                             moment().subtract(1, 'years').endOf('year'),
                         ],
                     }}
-                    value={getRangeDates(props.selectedKeys[0] as unknown as [string, string])}
+                    value={getRangeDates(props.selectedKeys as unknown as [string, string])}
                     onChange={(_date, dateStrings) => props.setSelectedKeys(dateStrings ? dateStrings : [])}
-                    style={{ marginBottom: 8, display: 'block' }}
+                    style={{ marginBottom: 8 }}
                     format='D MMMM YYYY'
                 />
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -69,7 +70,14 @@ export const DateProps = () => {
         filterMultiple: false,
         defaultSortOrder: 'descend' as SortOrder,
         onFilter: (value: string | number | boolean, record: expenseType | incomeType) => {
-            return moment(record.date).isBetween(value[0], value[1], 'day', '[]');
+            if (start && !end) {
+                end = value as string;
+            } else if (!start && !end) {
+                start = value as string;
+            } else {
+                return moment(record.date).isBetween(moment(start), moment(end), 'day', '[]');
+            }
+            return false;
         },
         sorter: (a: expenseType | incomeType, b: expenseType | incomeType) => a.date.localeCompare(b.date),
     });
