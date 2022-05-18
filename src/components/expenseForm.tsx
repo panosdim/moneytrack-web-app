@@ -4,11 +4,11 @@ import { FormComponentProps } from '@ant-design/compatible/lib/form';
 import Icon from '@ant-design/icons';
 import { DatePicker, Input, Select } from 'antd';
 import moment from 'moment';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { ReactComponent as EuroIconSvg } from '../images/euro.svg';
 import { categoriesState } from '../model';
-import { expenseType } from '../model/data';
+import { categoryType, expenseType } from '../model/data';
 
 interface Props extends FormComponentProps {
     expense?: expenseType;
@@ -16,7 +16,6 @@ interface Props extends FormComponentProps {
 
 const Option = Select.Option;
 
-// @ts-ignore
 moment.defineLocale('en-us', {
     week: {
         dow: 1, // Monday is the first day of the week.
@@ -24,10 +23,10 @@ moment.defineLocale('en-us', {
 });
 
 const NormalExpenseForm: React.FC<Props> = (props: Props) => {
-    // @ts-ignore
     const { form, expense } = props;
     const { getFieldDecorator, setFieldsValue } = form;
     const categories = useRecoilValue(categoriesState);
+    const [sortedCategories, setSortedCategories] = useState<categoryType[]>([]);
 
     useEffect(() => {
         if (expense) {
@@ -38,6 +37,8 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
                 comment: expense.comment,
             });
         }
+        const cpyCategories = [...categories];
+        setSortedCategories(cpyCategories.sort((a, b) => a.count - b.count).reverse());
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [expense]);
 
@@ -64,9 +65,7 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
                         },
                     ],
                 })(
-                    // @ts-ignore
                     <Input
-                        // @ts-ignore
                         suffix={<Icon component={EuroIconSvg} style={{ color: 'rgba(0,0,0,.45)' }} />}
                         style={{ width: '100%' }}
                         type='number'
@@ -89,24 +88,19 @@ const NormalExpenseForm: React.FC<Props> = (props: Props) => {
                         placeholder='Select a category'
                         optionFilterProp='children'
                         filterOption={(input, option) =>
-                            // @ts-ignore
-                            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            option?.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
                     >
-                        {categories
-                            .sort((a, b) => a.count - b.count)
-                            .reverse()
-                            .map((category) => (
-                                <Option key={category.id} value={category.id}>
-                                    {category.category}
-                                </Option>
-                            ))}
+                        {sortedCategories.map((category) => (
+                            <Option key={category.id} value={category.id}>
+                                {category.category}
+                            </Option>
+                        ))}
                     </Select>,
                 )}
             </Form.Item>
             <Form.Item>
                 {getFieldDecorator('comment')(
-                    // @ts-ignore
                     <Input style={{ width: '100%' }} type='text' placeholder='Enter Comment' />,
                 )}
             </Form.Item>

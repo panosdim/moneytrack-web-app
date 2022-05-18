@@ -98,7 +98,7 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                 const method = selectedIncome ? 'put' : 'post';
                 const url = selectedIncome ? `income/${selectedIncome.id}` : 'income';
                 const date = moment(values.date).format('YYYY-MM-01');
-                const storeValues = { ...values, date: date };
+                const storeValues = { ...values, date: date, amount: Number(values.amount) };
 
                 axios({
                     method: method,
@@ -107,8 +107,8 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                 })
                     .then((response) => {
                         selectedIncome
-                            ? setIncome(income.map((inc) => (inc.id === selectedIncome.id ? response.data.data : inc)))
-                            : setIncome([...income, response.data.data]);
+                            ? setIncome(income.map((inc) => (inc.id === selectedIncome.id ? response.data : inc)))
+                            : setIncome([...income, response.data]);
                         setLoading(false);
                         setVisible(false);
                         onVisibleChange(false);
@@ -139,7 +139,7 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                 const method = selectedExpense ? 'put' : 'post';
                 const url = selectedExpense ? `expense/${selectedExpense.id}` : 'expense';
                 const date = moment(values.date).format('YYYY-MM-DD');
-                const storeValues = { ...values, date: date };
+                const storeValues = { ...values, date: date, amount: Number(values.amount) };
 
                 axios({
                     method: method,
@@ -148,10 +148,8 @@ export const FormModal: React.FC<Props> = (props: Props) => {
                 })
                     .then((response) => {
                         selectedExpense
-                            ? setExpenses(
-                                  expenses.map((exp) => (exp.id === selectedExpense.id ? response.data.data : exp)),
-                              )
-                            : setExpenses([...expenses, response.data.data]);
+                            ? setExpenses(expenses.map((exp) => (exp.id === selectedExpense.id ? response.data : exp)))
+                            : setExpenses([...expenses, response.data]);
                         setLoading(false);
                         setVisible(false);
                         onVisibleChange(false);

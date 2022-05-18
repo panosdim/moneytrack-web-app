@@ -14,7 +14,7 @@ export const MONTHS: monthNames[] = [
 ];
 
 type monthNames =
-    'January'
+    | 'January'
     | 'February'
     | 'March'
     | 'April'
@@ -28,7 +28,7 @@ type monthNames =
     | 'December';
 
 export type shortMonthNames =
-    'Jan'
+    | 'Jan'
     | 'Feb'
     | 'Mar'
     | 'Apr'
@@ -46,7 +46,7 @@ export const getMonthName = (monthNum: number): monthNames => {
 };
 
 export const getShortMonthName = (monthNum: number): shortMonthNames => {
-    return MONTHS[monthNum - 1].substring(0, 3) as shortMonthNames || '';
+    return (MONTHS[monthNum - 1].substring(0, 3) as shortMonthNames) || '';
 };
 
 export const getLastYears = (numOfYears: number): number[] => {

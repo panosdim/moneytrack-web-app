@@ -36,8 +36,8 @@ export const CategoryHandle: React.FC<Props> = (props: Props) => {
             })
                 .then((response) => {
                     category
-                        ? setCategories(categories.map((cat) => (cat.id === category.id ? response.data.data : cat)))
-                        : setCategories([...categories, response.data.data]);
+                        ? setCategories(categories.map((cat) => (cat.id === category.id ? response.data : cat)))
+                        : setCategories([...categories, response.data]);
 
                     message.success('Category saved successfully!');
                     setVisible(false);
