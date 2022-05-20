@@ -4,7 +4,6 @@ export * from './dateUtils';
 export * from './expenseForm';
 export * from './expensesStatistics';
 export * from './expensesTable';
-export * from './formModal';
 export * from './incomeForm';
 export * from './incomeStatistics';
 export * from './incomeTable';

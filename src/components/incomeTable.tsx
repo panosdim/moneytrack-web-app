@@ -3,7 +3,7 @@ import { ColumnProps } from 'antd/es/table';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { DateProps, FormModal } from '.';
+import { DateProps, IncomeForm } from '.';
 import { incomesState } from '../model';
 import { incomeType } from '../model/data';
 import { moneyFmt } from './moneyFormatter';
@@ -60,7 +60,7 @@ export const IncomeTable: React.FC = () => {
 
     return (
         <>
-            <FormModal visible={showModal} selectedIncome={data} onVisibleChange={onVisibleChange} type='Income' />
+            <IncomeForm visible={showModal} selectedIncome={data} onVisibleChange={onVisibleChange} />
             <Table<incomeType>
                 rowKey={(record) => String(record.id)}
                 dataSource={income}

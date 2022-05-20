@@ -3,7 +3,7 @@ import { ColumnProps } from 'antd/es/table';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { DateProps, FormModal } from '.';
+import { DateProps, ExpenseForm } from '.';
 import { categoriesState, expensesState } from '../model';
 import { expenseType } from '../model/data';
 import { moneyFmt } from './moneyFormatter';
@@ -78,7 +78,7 @@ export const ExpensesTable: React.FC = () => {
 
     return (
         <>
-            <FormModal visible={showModal} selectedExpense={data} onVisibleChange={onVisibleChange} type='Expense' />
+            <ExpenseForm visible={showModal} selectedExpense={data} onVisibleChange={onVisibleChange} />
             <Table<expenseType>
                 rowKey={(record) => String(record.id)}
                 dataSource={expenses}

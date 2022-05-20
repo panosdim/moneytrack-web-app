@@ -4,7 +4,7 @@ import axios, { AxiosResponse } from 'axios';
 import React, { useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { CategoriesTab, DashboardTab, ExpensesTab, IncomeTab } from '.';
-import { CategoryHandle, FormModal, SavingStatistics } from '../components';
+import { CategoryHandle, ExpenseForm, IncomeForm, SavingStatistics } from '../components';
 import expense from '../images/expense.png';
 import income from '../images/income.png';
 import { categoriesState, expensesState, incomesState, loginState } from '../model';
@@ -18,7 +18,8 @@ export const MainPage: React.FC = () => {
     const setExpenses = useSetRecoilState(expensesState);
     const setCategories = useSetRecoilState(categoriesState);
     const [selectedTab, setSelectedTab] = useState<tabType>('Dashboard');
-    const [showModal, setShowModal] = useState(false);
+    const [showIncomeModal, setShowIncomeModal] = useState(false);
+    const [showExpenseModal, setShowExpenseModal] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [isIncomeFetched, setIncomeFetched] = useState(false);
     const [isExpensesFetched, setExpensesFetched] = useState(false);
@@ -57,6 +58,7 @@ export const MainPage: React.FC = () => {
                 message.error('Could not fetch categories data. Please login again.');
                 setLoggedIn(false);
             });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoggedIn]);
 
     React.useEffect(() => {
@@ -70,7 +72,17 @@ export const MainPage: React.FC = () => {
     };
 
     const AddNew = () => {
-        setShowModal(true);
+        switch (selectedTab) {
+            case 'Income':
+                setShowIncomeModal(true);
+                break;
+            case 'Expense':
+                setShowExpenseModal(true);
+                break;
+
+            default:
+                break;
+        }
     };
 
     const logout = () => {
@@ -95,10 +107,15 @@ export const MainPage: React.FC = () => {
                 </div>
             ) : (
                 <>
-                    <FormModal
-                        visible={showModal}
-                        onVisibleChange={(visible) => setShowModal(visible)}
-                        type={selectedTab}
+                    <IncomeForm
+                        visible={showIncomeModal}
+                        selectedIncome={undefined}
+                        onVisibleChange={(visible) => setShowIncomeModal(visible)}
+                    />
+                    <ExpenseForm
+                        visible={showExpenseModal}
+                        selectedExpense={undefined}
+                        onVisibleChange={(visible) => setShowExpenseModal(visible)}
                     />
                     <PageHeader
                         backIcon={false}
