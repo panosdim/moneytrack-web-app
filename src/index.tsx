@@ -1,16 +1,15 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import { RecoilRoot } from 'recoil';
 import App from './App';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 
-const container = document.getElementById('root');
-const root = createRoot(container!);
-root.render(
+ReactDOM.render(
     <RecoilRoot>
         <App />
     </RecoilRoot>,
+    document.getElementById('root'),
 );
 
 // If you want your app to work offline and load faster, you can change
