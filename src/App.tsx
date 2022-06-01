@@ -6,8 +6,8 @@ import './App.css';
 import { loginState } from './model';
 import { LoginPage, MainPage } from './pages';
 
-// axios.defaults.baseURL = 'https://moneytrack.dsw.mywire.org/api';
-axios.defaults.baseURL = 'http://localhost:8003/api';
+axios.defaults.baseURL = 'https://moneytrack.dsw.mywire.org/api';
+// axios.defaults.baseURL = 'http://localhost:8003/api';
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
 
 const App: React.FC = () => {
