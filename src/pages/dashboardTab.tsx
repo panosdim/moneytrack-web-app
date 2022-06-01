@@ -1,19 +1,11 @@
-import { Col, List, Modal, Row, Select, Typography } from 'antd';
+import { Col, List, message, Modal, Row, Select, Typography } from 'antd';
+import axios from 'axios';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { Bar, BarChart, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { useRecoilValue } from 'recoil';
-import {
-    getLastYears,
-    getMonth,
-    getMonthName,
-    getShortMonthName,
-    getYear,
-    moneyFmt,
-    MONTHS,
-    shortMonthNames,
-} from '../components';
-import { categoriesState, expensesState, incomesState } from '../model';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { getMonth, getMonthName, getShortMonthName, getYear, moneyFmt, MONTHS, shortMonthNames } from '../components';
+import { categoriesState, expensesState, incomesState, loginState } from '../model';
 import { categoryType, expenseType } from '../model/data';
 
 const { Option } = Select;
@@ -32,8 +24,29 @@ export const DashboardTab: React.FC = () => {
     const income = useRecoilValue(incomesState);
     const expenses = useRecoilValue(expensesState);
     const categories = useRecoilValue(categoriesState);
-    const [year, setYear] = useState(getLastYears(4).slice(-1)[0]);
+    const [year, setYear] = useState(new Date().getFullYear());
     const [month, setMonth] = useState(MONTHS[new Date().getMonth()]);
+    const [years, setYears] = useState<number[]>([]);
+    const setLoggedIn = useSetRecoilState(loginState);
+
+    React.useEffect(() => {
+        axios
+            .get('years')
+            .then((response) => {
+                setYears(response.data);
+                setYear(response.data[0]);
+            })
+            .catch((error) => {
+                if (error.response && error.response.status === 400) {
+                    // JWT Token expired
+                    setLoggedIn(false);
+                    message.error(error.response.data.error);
+                } else {
+                    message.error('Fail to retrieve years!');
+                }
+            });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const categoryName = (categoryID: number): string => {
         const found = categories.find((cat) => cat.id === Number(categoryID));
@@ -81,7 +94,6 @@ export const DashboardTab: React.FC = () => {
         }),
     );
 
-    const YEARS = getLastYears(4);
     const handleYearChange = (value) => {
         setYear(value);
     };
@@ -90,9 +102,7 @@ export const DashboardTab: React.FC = () => {
         setMonth(value);
     };
 
-    const handleClick = (data, index) => {
-        console.log(data);
-        console.log(index);
+    const handleClick = (data, _index) => {
         const cat = categories.find((cat) => cat.category === data.name);
         if (!cat) {
             return;
@@ -144,9 +154,9 @@ export const DashboardTab: React.FC = () => {
     return (
         <>
             <Row style={{ padding: '16px' }}>
-                <Col xs={2}>
+                <Col style={{ paddingRight: '16px' }}>
                     <Select defaultValue={year} style={{ width: 120 }} onChange={handleYearChange}>
-                        {YEARS.map((year) => (
+                        {years.map((year) => (
                             <Option key={year} value={year}>
                                 {year}
                             </Option>
