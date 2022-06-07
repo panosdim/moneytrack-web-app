@@ -20,6 +20,11 @@ type categoriesChartType = {
     value: number;
 };
 
+type yearChartType = {
+    name: string;
+    value: number;
+};
+
 export const DashboardTab: React.FC = () => {
     const income = useRecoilValue(incomesState);
     const expenses = useRecoilValue(expensesState);
@@ -78,6 +83,15 @@ export const DashboardTab: React.FC = () => {
         }, {});
     };
 
+    const organizePerYear = (items: any[]) => {
+        return items.reduce((totYear, itm) => {
+            const itmYear = getYear(itm.date);
+            totYear[itmYear] = (totYear[itmYear] || 0) + itm.amount;
+
+            return totYear;
+        }, {});
+    };
+
     const incomePerMonth = organizePerMonth(income);
     const expensesPerMonth = organizePerMonth(expenses);
     const savingsPerMonthData: monthlyChartType[] = Object.keys(expensesPerMonth).map((key) => {
@@ -93,6 +107,14 @@ export const DashboardTab: React.FC = () => {
             value: monthlyExpensesPerCategories[key],
         }),
     );
+
+    const incomePerYear = organizePerYear(income);
+    const expensesPerYear = organizePerYear(expenses);
+    const savingsPerYearData: yearChartType[] = Object.keys(expensesPerYear).map((key) => {
+        const income = incomePerYear[key] ? Number(incomePerYear[key]) : 0;
+        const expenses = expensesPerYear[key] ? Number(expensesPerYear[key]) : 0;
+        return { name: key, value: income - expenses };
+    });
 
     const handleYearChange = (value) => {
         setYear(value);
@@ -177,48 +199,65 @@ export const DashboardTab: React.FC = () => {
                 <Title level={3} style={{ textAlign: 'center' }}>
                     Expenses per categories
                 </Title>
-                <div style={{ width: '100%', height: 500 }}>
-                    <ResponsiveContainer>
-                        <BarChart
-                            data={monthlyExpensesPerCategoriesData}
-                            margin={{
-                                top: 20,
-                                right: 30,
-                                left: 20,
-                                bottom: 5,
-                            }}
-                        >
-                            <XAxis dataKey='name' interval={0} />
-                            <YAxis unit={'\u20AC'} />
-                            <Tooltip formatter={(value: number) => moneyFmt.format(value)} />
-                            <Bar dataKey='value' fill='#428bca' onClick={handleClick} />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
+                <ResponsiveContainer height={500}>
+                    <BarChart
+                        data={monthlyExpensesPerCategoriesData}
+                        margin={{
+                            top: 20,
+                            right: 30,
+                            left: 20,
+                            bottom: 80,
+                        }}
+                    >
+                        <XAxis angle={-45} textAnchor='end' dataKey='name' interval={0} />
+                        <YAxis unit={'\u20AC'} />
+                        <Tooltip formatter={(value: number) => moneyFmt.format(value)} />
+                        <Bar dataKey='value' fill='#428bca' onClick={handleClick} />
+                    </BarChart>
+                </ResponsiveContainer>
             </Row>
             <Row>
                 <Title level={3} style={{ textAlign: 'center' }}>
                     Savings per month
                 </Title>
-                <div style={{ width: '100%', height: 500 }}>
-                    <ResponsiveContainer>
-                        <LineChart
-                            data={savingsPerMonthData}
-                            margin={{
-                                top: 20,
-                                right: 30,
-                                left: 20,
-                                bottom: 5,
-                            }}
-                        >
-                            <XAxis dataKey='name' padding={{ left: 10, right: 10 }} />
-                            <YAxis unit={'\u20AC'} />
-                            <ReferenceLine y={0} stroke='red' />
-                            <Tooltip formatter={(value: number) => moneyFmt.format(value)} />
-                            <Line type='monotone' dataKey='value' stroke='#8884d8' strokeWidth={2} />
-                        </LineChart>
-                    </ResponsiveContainer>
-                </div>
+                <ResponsiveContainer height={500}>
+                    <LineChart
+                        data={savingsPerMonthData}
+                        margin={{
+                            top: 20,
+                            right: 30,
+                            left: 20,
+                            bottom: 5,
+                        }}
+                    >
+                        <XAxis dataKey='name' padding={{ left: 10, right: 10 }} />
+                        <YAxis unit={'\u20AC'} />
+                        <ReferenceLine y={0} stroke='red' />
+                        <Tooltip formatter={(value: number) => moneyFmt.format(value)} />
+                        <Line type='monotone' dataKey='value' stroke='#8884d8' strokeWidth={2} />
+                    </LineChart>
+                </ResponsiveContainer>
+            </Row>
+            <Row>
+                <Title level={3} style={{ textAlign: 'center' }}>
+                    Savings per year
+                </Title>
+                <ResponsiveContainer height={500}>
+                    <BarChart
+                        data={savingsPerYearData}
+                        margin={{
+                            top: 20,
+                            right: 30,
+                            left: 20,
+                            bottom: 5,
+                        }}
+                    >
+                        <XAxis dataKey='name' interval={0} />
+                        <YAxis unit={'\u20AC'} />
+                        <Tooltip formatter={(value: number) => moneyFmt.format(value)} />
+                        <Bar dataKey='value' fill='#428bca' />
+                    </BarChart>
+                </ResponsiveContainer>
             </Row>
         </>
     );
