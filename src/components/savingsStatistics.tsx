@@ -4,6 +4,8 @@ import moment from 'moment';
 import React, { useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
+    allExpensesState,
+    allIncomeState,
     expensesState,
     incomesState,
     monthExpensesState,
@@ -21,6 +23,8 @@ export const SavingStatistics: React.FC = () => {
     const [totalYearExpenses, setTotalYearExpenses] = useRecoilState(yearExpensesState);
     const [totalMonthIncome, setTotalMonthIncome] = useRecoilState(monthIncomeState);
     const [totalYearIncome, setTotalYearIncome] = useRecoilState(yearIncomeState);
+    const [totalIncome, setTotalIncome] = useRecoilState(allIncomeState);
+    const [totalExpenses, setTotalExpenses] = useRecoilState(allExpensesState);
 
     useEffect(() => {
         setTotalMonthIncome(
@@ -55,16 +59,20 @@ export const SavingStatistics: React.FC = () => {
                 .reduce((total, exp) => total + exp.amount, 0),
         );
 
+        setTotalExpenses(expenses.reduce((total, exp) => total + exp.amount, 0));
+        setTotalIncome(income.reduce((total, inc) => total + inc.amount, 0));
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [income, expenses]);
 
     const monthSavings = totalMonthIncome - totalMonthExpenses;
     const yearSavings = totalYearIncome - totalYearExpenses;
     const percentage = Math.ceil((monthSavings * 100) / totalMonthIncome);
+    const totalSavings = totalIncome - totalExpenses;
 
     return (
         <Row gutter={16}>
-            <Col span={8}>
+            <Col span={6}>
                 <Card style={{ height: '100%' }}>
                     <Statistic
                         title={`Savings ${moment().format('MMMM YYYY')}`}
@@ -80,7 +88,7 @@ export const SavingStatistics: React.FC = () => {
                     />
                 </Card>
             </Col>
-            <Col span={8}>
+            <Col span={6}>
                 <Card style={{ height: '100%' }}>
                     <Statistic
                         title={`Savings ${moment().format('YYYY')}`}
@@ -96,11 +104,27 @@ export const SavingStatistics: React.FC = () => {
                     />
                 </Card>
             </Col>
-            <Col span={8}>
+            <Col span={6}>
                 <Card style={{ height: '100%' }}>
                     <Meta title={`Remain Money to Spend for ${moment().format('MMMM YYYY')}`} />
                     <p />
                     <Progress percent={percentage} />
+                </Card>
+            </Col>
+            <Col span={6}>
+                <Card style={{ height: '100%' }}>
+                    <Statistic
+                        title={'Total Savings'}
+                        value={totalSavings}
+                        decimalSeparator=','
+                        groupSeparator='.'
+                        precision={2}
+                        valueStyle={{
+                            color: totalSavings > 0 ? '#3f8600' : '#cf1322',
+                        }}
+                        prefix={totalSavings > 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+                        suffix='€'
+                    />
                 </Card>
             </Col>
         </Row>

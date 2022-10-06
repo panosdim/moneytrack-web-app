@@ -26,6 +26,11 @@ export const yearIncomeState = atom<number>({
     default: 0,
 });
 
+export const allIncomeState = atom<number>({
+    key: 'allIncome',
+    default: 0,
+});
+
 export const monthIncomeState = atom<number>({
     key: 'monthIncome',
     default: 0,
@@ -33,6 +38,11 @@ export const monthIncomeState = atom<number>({
 
 export const yearExpensesState = atom<number>({
     key: 'yearExpenses',
+    default: 0,
+});
+
+export const allExpensesState = atom<number>({
+    key: 'allExpenses',
     default: 0,
 });
 
